@@ -63,6 +63,14 @@ export function WeatherBackground({ weather, isLoading, showHelp, onHelpToggle }
       } else if (e.code === 'KeyH') {
         e.preventDefault();
         onHelpToggle();
+      } else if (e.code === 'ArrowUp') {
+        e.preventDefault();
+        // 볼륨 업 이벤트 발생
+        window.dispatchEvent(new CustomEvent('volumeUp'));
+      } else if (e.code === 'ArrowDown') {
+        e.preventDefault();
+        // 볼륨 다운 이벤트 발생
+        window.dispatchEvent(new CustomEvent('volumeDown'));
       }
     };
 

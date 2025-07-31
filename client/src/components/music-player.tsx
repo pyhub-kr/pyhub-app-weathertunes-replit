@@ -3,50 +3,20 @@ import type { MusicTrack } from "@shared/schema";
 interface MusicPlayerProps {
   track: MusicTrack;
   isPlaying: boolean;
-  currentTime: number;
-  duration: number;
-  volume: number;
   onPlayPause: () => void;
   onPrevious: () => void;
   onNext: () => void;
-  onSeek: (time: number) => void;
-  onVolumeChange: (volume: number) => void;
   onRefresh: () => void;
 }
 
 export function MusicPlayer({
   track,
   isPlaying,
-  currentTime,
-  duration,
-  volume,
   onPlayPause,
   onPrevious,
   onNext,
-  onSeek,
-  onVolumeChange,
   onRefresh,
 }: MusicPlayerProps) {
-  const formatTime = (seconds: number) => {
-    // Handle invalid values
-    if (isNaN(seconds) || seconds < 0) {
-      return "0:00";
-    }
-    
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    
-    // Format as HH:MM:SS if over 60 minutes, otherwise MM:SS
-    if (mins >= 60) {
-      const hours = Math.floor(mins / 60);
-      const remainingMins = mins % 60;
-      return `${hours}:${remainingMins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-    }
-    
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
-
-  const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
 
   return (
     <div className="bg-white bg-opacity-10 backdrop-blur-md rounded-3xl p-4 shadow-2xl animate-slide-up hover:bg-opacity-15 transition-all duration-300 hover:scale-105">
@@ -94,53 +64,7 @@ export function MusicPlayer({
         </button>
       </div>
       
-      {/* Progress Bar */}
-      <div className="mb-4">
-        <div className="flex justify-between text-white text-opacity-70 text-xs mb-2">
-          <span>{formatTime(currentTime)}</span>
-          <span>{formatTime(duration)}</span>
-        </div>
-        <div 
-          className="w-full bg-white bg-opacity-20 rounded-full h-1 cursor-pointer"
-          onClick={(e) => {
-            const rect = e.currentTarget.getBoundingClientRect();
-            const clickX = e.clientX - rect.left;
-            const percentage = clickX / rect.width;
-            onSeek(percentage * duration);
-          }}
-        >
-          <div 
-            className="bg-white h-1 rounded-full transition-all duration-300 relative overflow-hidden" 
-            style={{ width: `${progress}%` }}
-          >
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-50 animate-shimmer" />
-          </div>
-        </div>
-      </div>
-      
-      {/* Volume Control */}
-      <div className="flex items-center space-x-3 mb-6">
-        <svg className="w-4 h-4 text-white text-opacity-70" fill="currentColor" viewBox="0 0 20 20">
-          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM12.293 7.293a1 1 0 011.414 0L15 8.586l1.293-1.293a1 1 0 111.414 1.414L16.414 10l1.293 1.293a1 1 0 01-1.414 1.414L15 11.414l-1.293 1.293a1 1 0 01-1.414-1.414L13.586 10l-1.293-1.293a1 1 0 010-1.414z" clipRule="evenodd" />
-        </svg>
-        <div 
-          className="flex-1 bg-white bg-opacity-20 rounded-full h-1 cursor-pointer"
-          onClick={(e) => {
-            const rect = e.currentTarget.getBoundingClientRect();
-            const clickX = e.clientX - rect.left;
-            const percentage = clickX / rect.width;
-            onVolumeChange(percentage * 100);
-          }}
-        >
-          <div 
-            className="bg-white h-1 rounded-full" 
-            style={{ width: `${volume}%` }}
-          />
-        </div>
-        <svg className="w-4 h-4 text-white text-opacity-70" fill="currentColor" viewBox="0 0 20 20">
-          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM15.657 6.343a1 1 0 011.414 0A9.972 9.972 0 0119 12a9.972 9.972 0 01-1.929 5.657 1 1 0 11-1.414-1.414A7.971 7.971 0 0017 12c0-1.636-.49-3.154-1.343-4.243a1 1 0 010-1.414z" clipRule="evenodd" />
-        </svg>
-      </div>
+
       
       {/* Additional Controls */}
       <div className="flex justify-center space-x-4">

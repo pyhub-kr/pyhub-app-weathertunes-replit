@@ -80,6 +80,25 @@ export default function Home() {
     }
   }, [setOnTrackEnd, handleNext]);
 
+  // 볼륨 조절 키보드 이벤트 리스너
+  useEffect(() => {
+    const handleVolumeUp = () => {
+      setPlayerVolume(Math.min(volume + 10, 100));
+    };
+
+    const handleVolumeDown = () => {
+      setPlayerVolume(Math.max(volume - 10, 0));
+    };
+
+    window.addEventListener('volumeUp', handleVolumeUp);
+    window.addEventListener('volumeDown', handleVolumeDown);
+
+    return () => {
+      window.removeEventListener('volumeUp', handleVolumeUp);
+      window.removeEventListener('volumeDown', handleVolumeDown);
+    };
+  }, [volume, setPlayerVolume]);
+
   const handleRefresh = () => {
     if (weather?.condition) {
       const newPlaylist = getPlaylistForWeather(weather.condition);
@@ -166,14 +185,9 @@ export default function Home() {
                 <MusicPlayer
                   track={currentTrack}
                   isPlaying={isPlaying}
-                  currentTime={currentTime}
-                  duration={duration}
-                  volume={volume}
                   onPlayPause={handlePlayPause}
                   onPrevious={handlePrevious}
                   onNext={handleNext}
-                  onSeek={seekTo}
-                  onVolumeChange={setPlayerVolume}
                   onRefresh={handleRefresh}
                 />
               )}
@@ -226,6 +240,14 @@ export default function Home() {
                 <div className="flex justify-between items-center">
                   <span className="text-gray-300 font-mono">B</span>
                   <span>배경 변경</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-300 font-mono">↑</span>
+                  <span>볼륨 증가</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-300 font-mono">↓</span>
+                  <span>볼륨 감소</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-gray-300 font-mono">H</span>
