@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { WeatherData } from "@shared/schema";
-import { getTimeWeatherBackground, getTimeOfDay, getTimeDisplayName, type WeatherCondition } from "@/lib/time-background";
+import { getTimeWeatherBackground, getTimeOfDay, getTimeDisplayName, getBackgroundCount, type WeatherCondition } from "@/lib/time-background";
 
 interface WeatherBackgroundProps {
   weather: WeatherData | null;
@@ -8,6 +8,7 @@ interface WeatherBackgroundProps {
 }
 
 export function WeatherBackground({ weather, isLoading }: WeatherBackgroundProps) {
+  const [backgroundIndex, setBackgroundIndex] = useState(0);
   const [currentBackground, setCurrentBackground] = useState(() => getTimeWeatherBackground());
   const [currentTime, setCurrentTime] = useState(new Date());
 
@@ -20,18 +21,29 @@ export function WeatherBackground({ weather, isLoading }: WeatherBackgroundProps
     return () => clearInterval(timer);
   }, []);
 
-  // Update background when weather or time changes
+  // Update background when weather, time, or index changes
   useEffect(() => {
     const weatherCondition = weather?.condition as WeatherCondition;
-    const newBackground = getTimeWeatherBackground(weatherCondition);
+    const newBackground = getTimeWeatherBackground(weatherCondition, backgroundIndex);
     setCurrentBackground(newBackground);
-  }, [weather?.condition, currentTime]);
+  }, [weather?.condition, currentTime, backgroundIndex]);
+
+  // Handle background click to cycle through options
+  const handleBackgroundClick = () => {
+    const weatherCondition = weather?.condition as WeatherCondition;
+    const maxBackgrounds = getBackgroundCount(weatherCondition);
+    setBackgroundIndex((prev) => (prev + 1) % maxBackgrounds);
+  };
 
   const timeOfDay = getTimeOfDay();
   const timeDisplayName = getTimeDisplayName(timeOfDay);
 
   return (
-    <div className="fixed inset-0 w-full h-full transition-all duration-1000 ease-in-out">
+    <div 
+      className="fixed inset-0 w-full h-full transition-all duration-1000 ease-in-out cursor-pointer group"
+      onClick={handleBackgroundClick}
+      title="배경을 클릭하여 다른 스타일로 변경"
+    >
       {/* Animated Gradient Background */}
       <div 
         className="absolute inset-0 animated-background transition-all duration-1000 ease-in-out"
@@ -47,13 +59,31 @@ export function WeatherBackground({ weather, isLoading }: WeatherBackgroundProps
       {/* Subtle overlay for text readability */}
       <div className="absolute inset-0 bg-black bg-opacity-15" />
       
+      {/* Background change indicator */}
+      <div className="absolute bottom-4 left-4 z-20 text-white text-opacity-60 text-xs font-medium bg-black bg-opacity-20 rounded-full px-3 py-1 backdrop-blur-sm transition-all duration-300 opacity-0 group-hover:opacity-100">
+        배경 변경 ({backgroundIndex + 1}/{getBackgroundCount(weather?.condition as WeatherCondition)})
+      </div>
+      
       {/* Time display overlay */}
       <div className="absolute top-4 right-4 z-20 text-white text-opacity-80 text-xs font-medium bg-black bg-opacity-25 rounded-full px-3 py-1 backdrop-blur-sm transition-all duration-300 hover:bg-opacity-40">
         {timeDisplayName} • {currentTime.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
       </div>
       
-      {/* Enhanced Weather Effects */}
+      {/* Enhanced Weather and Time Effects */}
       <div className="absolute inset-0 pointer-events-none z-10">
+        {/* Night time special effects */}
+        {timeOfDay === 'night' && (
+          <>
+            <div className="absolute inset-0 opacity-80">
+              <div className="stars-effect"></div>
+            </div>
+            <div className="absolute inset-0 opacity-60">
+              <div className="shooting-stars"></div>
+            </div>
+          </>
+        )}
+        
+        {/* Weather specific effects */}
         {weather?.condition === 'rain' && (
           <>
             <div className="absolute inset-0 opacity-40">
