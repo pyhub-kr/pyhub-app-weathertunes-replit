@@ -13,6 +13,7 @@ export default function Home() {
   const [currentTrack, setCurrentTrack] = useState<MusicTrack | null>(null);
   const [playlist, setPlaylist] = useState<MusicTrack[]>([]);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
+  const [showHelp, setShowHelp] = useState(false);
   
   const { location, isLoading: locationLoading, error: locationError, isUsingDefault } = useGeolocation();
   const { weather, isLoading: weatherLoading, error: weatherError } = useWeather(location);
@@ -88,7 +89,12 @@ export default function Home() {
   return (
     <div className="relative min-h-screen overflow-hidden">
       {/* Background */}
-      <WeatherBackground weather={weather || null} isLoading={isLoading} />
+      <WeatherBackground 
+        weather={weather || null} 
+        isLoading={isLoading} 
+        showHelp={showHelp}
+        onHelpToggle={() => setShowHelp(prev => !prev)}
+      />
       
       {/* Loading Overlay */}
       {isLoading && (
@@ -182,6 +188,52 @@ export default function Home() {
 
       {/* Hidden YouTube Player */}
       <YouTubePlayer />
+
+      {/* 키보드 단축키 도움말 (H키로 토글) - 최상위 레벨 */}
+      {showHelp && (
+        <>
+          {/* 배경 오버레이 */}
+          <div 
+            className="fixed inset-0 bg-black bg-opacity-70" 
+            style={{ zIndex: 10000 }}
+            onClick={() => setShowHelp(false)}
+          />
+          {/* 도움말 모달 */}
+          <div 
+            className="fixed inset-0 flex items-center justify-center pointer-events-none" 
+            style={{ zIndex: 10001 }}
+          >
+            <div className="bg-black text-white text-lg rounded-xl p-6 transition-all duration-300 max-w-md w-full mx-4 shadow-2xl border-2 border-white border-opacity-50 pointer-events-auto"
+                 style={{ backgroundColor: 'rgba(0, 0, 0, 0.95)' }}>
+              <div className="font-bold mb-4 text-center text-xl">키보드 단축키</div>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-300 font-mono">스페이스바 / →</span>
+                  <span>다음 배경</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-300 font-mono">←</span>
+                  <span>이전 배경</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-300 font-mono">B</span>
+                  <span>배경 변경</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-300 font-mono">H</span>
+                  <span>도움말 토글</span>
+                </div>
+              </div>
+              <div className="mt-4 pt-3 border-t border-gray-600 text-center text-yellow-300">
+                현재 배경: {weather ? `다양한 배경` : '로딩 중...'}
+              </div>
+              <div className="mt-4 text-center text-gray-400 text-sm">
+                H키를 다시 누르거나 배경을 클릭하면 닫힙니다
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
