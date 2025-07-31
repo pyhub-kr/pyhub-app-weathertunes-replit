@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a full-stack weather-based music application built with React, Express, TypeScript, and PostgreSQL. The app detects the user's location, fetches current weather data, and plays music that matches the weather conditions using YouTube videos as the audio source.
+This is a full-stack weather-based music application built with React, Express, TypeScript, and PostgreSQL. The app detects the user's location, fetches current weather data, and plays music that matches the weather conditions using YouTube videos as the audio source. Features include random shuffle playback, Media Session API for background control, expanded music database (750+ tracks), and enhanced visual backgrounds.
 
 ## User Preferences
 
@@ -41,9 +41,12 @@ Preferred communication style: Simple, everyday language.
 
 ### Music System
 - **Audio Source**: YouTube videos embedded as hidden players
-- **Music Mapping**: Weather conditions mapped to curated playlists
+- **Music Mapping**: Weather conditions mapped to curated playlists (750+ tracks)
+- **Random Playback**: Shuffle mode with random track selection for next/previous
 - **Player Controls**: Play/pause, next/previous, volume, seek controls
-- **Background Management**: Dynamic background images based on weather
+- **Background Control**: Media Session API for lock screen and browser controls
+- **Auto-Play**: Automatic next track playback after user interaction
+- **Background Management**: Dynamic background images based on weather and time
 
 ### User Interface
 - **Responsive Design**: Mobile-first approach with Tailwind breakpoints
@@ -108,3 +111,9 @@ Preferred communication style: Simple, everyday language.
 **Weather-Driven Experience**: Core feature where weather conditions directly influence music selection and visual presentation.
 
 **Type-Safe Schema Sharing**: Zod schemas in shared directory ensure consistent data validation across frontend and backend.
+
+**Random Shuffle Playback**: Playlists start from random tracks and navigate randomly to prevent repetitive listening patterns.
+
+**Media Session API Integration**: Enables background playback control through browser notifications, lock screen controls, and keyboard media keys.
+
+**Expanded Content Database**: 750+ music tracks categorized by weather conditions and time of day, with enhanced background image keywords including night cityscapes and campfire scenes.

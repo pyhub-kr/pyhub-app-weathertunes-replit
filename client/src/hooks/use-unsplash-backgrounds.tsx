@@ -28,7 +28,7 @@ const getSearchKeywords = (condition: string, timeOfDay: 'dawn' | 'morning' | 'a
     morning: 'morning sunny bright',
     afternoon: 'afternoon daylight sunny',
     evening: 'sunset evening golden hour',
-    night: 'night dark moody'
+    night: 'night dark moody cityscape skyline campfire bonfire cozy fireplace warm lights urban nightscape'
   };
 
   const weatherKeywords: Record<string, string> = {
@@ -41,8 +41,10 @@ const getSearchKeywords = (condition: string, timeOfDay: 'dawn' | 'morning' | 'a
     drizzle: 'light rain misty atmospheric',
     thunderstorm: 'storm dramatic dark clouds',
     snow: 'snow winter white peaceful',
-    fog: 'fog mist ethereal mysterious',
-    windy: 'windy movement dynamic nature'
+    fog: 'fog mist ethereal mysterious atmospheric vapor',
+    windy: 'windy movement dynamic nature flowing',
+    mist: 'misty foggy ethereal dreamy mysterious',
+    haze: 'hazy atmospheric soft dreamy golden'
   };
 
   const baseKeyword = weatherKeywords[condition] || 'beautiful nature landscape';

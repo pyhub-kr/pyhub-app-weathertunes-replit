@@ -1,6 +1,7 @@
 import type { MusicTrack } from "@shared/schema";
+import { getTimeOfDay } from "./time-background";
 
-// Weather-based music playlists
+// Expanded weather and time-based music playlists (750+ tracks)
 const musicPlaylists = {
   clear: [
     {

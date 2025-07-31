@@ -33,13 +33,15 @@ export default function Home() {
     setOnTrackEnd,
   } = useYouTubePlayer();
 
-  // Update playlist when weather changes
+  // Update playlist when weather changes with random starting track
   useEffect(() => {
     if (weather?.condition) {
       const newPlaylist = getPlaylistForWeather(weather.condition);
       setPlaylist(newPlaylist);
-      setCurrentTrackIndex(0);
-      setCurrentTrack(newPlaylist[0] || null);
+      // Start with random track instead of first one
+      const randomIndex = Math.floor(Math.random() * newPlaylist.length);
+      setCurrentTrackIndex(randomIndex);
+      setCurrentTrack(newPlaylist[randomIndex] || null);
     }
   }, [weather?.condition]);
 
@@ -91,7 +93,12 @@ export default function Home() {
 
   const handlePrevious = useCallback(() => {
     if (playlist.length > 0) {
-      const newIndex = currentTrackIndex > 0 ? currentTrackIndex - 1 : playlist.length - 1;
+      // Random previous track instead of sequential
+      let newIndex;
+      do {
+        newIndex = Math.floor(Math.random() * playlist.length);
+      } while (newIndex === currentTrackIndex && playlist.length > 1); // Avoid same track
+      
       setCurrentTrackIndex(newIndex);
       setCurrentTrack(playlist[newIndex]);
     }
@@ -99,18 +106,46 @@ export default function Home() {
 
   const handleNext = useCallback(() => {
     if (playlist.length > 0) {
-      const newIndex = currentTrackIndex < playlist.length - 1 ? currentTrackIndex + 1 : 0;
+      // Random next track instead of sequential
+      let newIndex;
+      do {
+        newIndex = Math.floor(Math.random() * playlist.length);
+      } while (newIndex === currentTrackIndex && playlist.length > 1); // Avoid same track
+      
       setCurrentTrackIndex(newIndex);
       setCurrentTrack(playlist[newIndex]);
     }
   }, [playlist, currentTrackIndex]);
 
-  // 트랙이 끝났을 때 자동으로 다음 곡 재생
+  // 트랙이 끝났을 때 자동으로 다음 곡 재생 및 Media Session API 설정
   useEffect(() => {
     if (setOnTrackEnd) {
-      setOnTrackEnd(handleNext);
+      setOnTrackEnd(() => {
+        handleNext();
+        // Auto-play next track
+        setTimeout(() => {
+          play();
+        }, 1000);
+      });
     }
-  }, [setOnTrackEnd, handleNext]);
+
+    // Media Session API 핸들러 설정
+    if ('mediaSession' in navigator) {
+      navigator.mediaSession.setActionHandler('nexttrack', () => {
+        handleNext();
+        setTimeout(() => {
+          play();
+        }, 500);
+      });
+      
+      navigator.mediaSession.setActionHandler('previoustrack', () => {
+        handlePrevious();
+        setTimeout(() => {
+          play();
+        }, 500);
+      });
+    }
+  }, [setOnTrackEnd, handleNext, handlePrevious, play]);
 
   // 볼륨 조절 키보드 이벤트 리스너
   useEffect(() => {

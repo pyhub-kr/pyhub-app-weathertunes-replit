@@ -13,6 +13,7 @@ export function useYouTubePlayer() {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(50);
+  const [currentTrackInfo, setCurrentTrackInfo] = useState<{title: string, mood: string} | null>(null);
   const playerRef = useRef<any>(null);
   const intervalRef = useRef<NodeJS.Timeout>();
   const startTimeRef = useRef<number>(0);
@@ -187,7 +188,8 @@ export function useYouTubePlayer() {
           artist: 'WeatherTunes',
           album: trackMood || '날씨 기반 음악',
           artwork: [
-            { src: '/icon-192.png', sizes: '192x192', type: 'image/png' }
+            { src: '/icon.svg', sizes: '192x192', type: 'image/svg+xml' },
+            { src: '/icon.svg', sizes: '512x512', type: 'image/svg+xml' }
           ]
         });
         
