@@ -99,9 +99,9 @@ export function WeatherBackground({ weather, isLoading, showHelp, onHelpToggle }
       
 
       
-      {/* Help hint - H키 안내 (우하단, 음악 플레이어 위) */}
+      {/* Help hint - H키 안내 (우하단) */}
       {!showHelp && (
-        <div className="absolute bottom-20 right-6 z-20 text-white text-opacity-60 text-xs bg-black bg-opacity-30 rounded px-2 py-1 backdrop-blur-sm transition-all duration-300">
+        <div className="absolute bottom-6 right-6 z-20 text-white text-opacity-60 text-xs bg-black bg-opacity-30 rounded px-2 py-1 backdrop-blur-sm transition-all duration-300">
           H키: 도움말
         </div>
       )}

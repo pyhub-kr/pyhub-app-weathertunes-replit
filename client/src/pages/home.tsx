@@ -192,9 +192,9 @@ export default function Home() {
       {/* 키보드 단축키 도움말 (H키로 토글) - 최상위 레벨 */}
       {showHelp && (
         <>
-          {/* 배경 오버레이 */}
+          {/* 배경 오버레이 - 투명 */}
           <div 
-            className="fixed inset-0 bg-black bg-opacity-70" 
+            className="fixed inset-0" 
             style={{ zIndex: 10000 }}
             onClick={() => setShowHelp(false)}
           />
