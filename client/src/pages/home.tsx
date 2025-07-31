@@ -189,7 +189,7 @@ export default function Home() {
   const hasError = (locationError && !isUsingDefault) || weatherError;
 
   return (
-    <div className="relative min-h-screen overflow-hidden">
+    <div className="relative min-h-screen overflow-hidden bg-[#0f0f23]">
       {/* Background */}
       <WeatherBackground 
         weather={weather || null} 

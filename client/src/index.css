@@ -68,11 +68,23 @@
     min-height: 100vh;
     min-height: -webkit-fill-available;
     overflow-x: hidden;
+    background-color: #0f0f23;
   }
 
   /* Safe area handling for mobile devices */
   .safe-area-inset {
     padding-top: env(safe-area-inset-top);
+  }
+
+  /* Force dark background on html and body */
+  html, body {
+    background-color: #0f0f23 !important;
+  }
+
+  /* Ensure root div also has dark background */
+  #root {
+    background-color: #0f0f23;
+    min-height: 100vh;
     padding-bottom: env(safe-area-inset-bottom);
     padding-left: env(safe-area-inset-left);
     padding-right: env(safe-area-inset-right);
