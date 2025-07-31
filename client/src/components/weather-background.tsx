@@ -55,8 +55,7 @@ export function WeatherBackground({ weather, isLoading }: WeatherBackgroundProps
 
   return (
     <div 
-      className="fixed inset-0 w-full h-full transition-all duration-1000 ease-in-out cursor-pointer group"
-      onClick={handleBackgroundClick}
+      className="fixed inset-0 w-full h-full transition-all duration-1000 ease-in-out"
       title="배경을 클릭하여 다른 스타일로 변경"
     >
       {/* Animated Gradient Background */}
@@ -87,23 +86,45 @@ export function WeatherBackground({ weather, isLoading }: WeatherBackgroundProps
       {/* Debug test buttons */}
       <div className="absolute top-4 left-4 z-20 flex flex-col gap-2">
         <button 
-          onClick={handleBackgroundClick}
-          className="text-white text-xs font-bold bg-red-600 rounded px-4 py-2 hover:bg-red-700 transition-all duration-300 shadow-lg"
+          onMouseDown={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const weatherCondition = weather?.condition as WeatherCondition;
+            const maxBackgrounds = getBackgroundCount(weatherCondition);
+            const nextIndex = (backgroundIndex + 1) % maxBackgrounds;
+            const logMessage = `RED 버튼 클릭! ${backgroundIndex} → ${nextIndex}`;
+            setDebugInfo(prev => [logMessage, ...prev.slice(0, 4)]);
+            setBackgroundIndex(nextIndex);
+          }}
+          className="text-white text-xs font-bold bg-red-600 rounded px-4 py-2 hover:bg-red-700 transition-all duration-300 shadow-lg pointer-events-auto"
         >
           배경 변경 ({backgroundIndex + 1}/{getBackgroundCount(weather?.condition as WeatherCondition)})
         </button>
         <button 
-          onClick={() => {
+          onMouseDown={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
             const weatherCondition = weather?.condition as WeatherCondition;
             const maxBackgrounds = getBackgroundCount(weatherCondition);
             const nextIndex = (backgroundIndex + 1) % maxBackgrounds;
-            const logMessage = `직접변경! ${backgroundIndex} → ${nextIndex}`;
+            const logMessage = `BLUE 버튼 클릭! ${backgroundIndex} → ${nextIndex}`;
             setDebugInfo(prev => [logMessage, ...prev.slice(0, 4)]);
             setBackgroundIndex(nextIndex);
           }}
-          className="text-white text-xs font-bold bg-blue-600 rounded px-4 py-2 hover:bg-blue-700 transition-all duration-300 shadow-lg"
+          className="text-white text-xs font-bold bg-blue-600 rounded px-4 py-2 hover:bg-blue-700 transition-all duration-300 shadow-lg pointer-events-auto"
         >
           직접 변경
+        </button>
+        <button 
+          onMouseDown={(e) => {
+            e.preventDefault();
+            const logMessage = `강제 테스트! ${new Date().getSeconds()}초`;
+            setDebugInfo(prev => [logMessage, ...prev.slice(0, 4)]);
+            setBackgroundIndex(prev => prev === 0 ? 1 : 0);
+          }}
+          className="text-white text-xs font-bold bg-green-600 rounded px-4 py-2 hover:bg-green-700 transition-all duration-300 shadow-lg pointer-events-auto"
+        >
+          강제 변경
         </button>
       </div>
       

@@ -203,7 +203,7 @@ html, body {
   animation: gradientShift 15s ease infinite;
 }
 
-/* Floating particles */
+/* Enhanced floating particles - 더 반짝이는 별 */
 .floating-particles {
   position: absolute;
   width: 100%;
@@ -218,9 +218,14 @@ html, body {
   left: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
-  background-size: 50px 50px;
-  animation: float 20s linear infinite;
+  background: 
+    radial-gradient(circle, rgba(255,255,255,0.9) 2px, transparent 3px),
+    radial-gradient(circle, rgba(255,255,255,0.6) 1px, transparent 2px),
+    radial-gradient(circle, rgba(255,255,255,0.4) 1px, transparent 2px),
+    radial-gradient(circle, rgba(255,255,255,0.8) 2px, transparent 3px);
+  background-size: 100px 100px, 150px 150px, 200px 200px, 250px 250px;
+  animation: float 15s linear infinite, twinkle 3s infinite ease-in-out;
+  filter: drop-shadow(0 0 5px rgba(255,255,255,0.8));
 }
 
 .floating-particles::after {
@@ -230,9 +235,18 @@ html, body {
   left: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(circle, rgba(255,255,255,0.05) 2px, transparent 2px);
-  background-size: 80px 80px;
-  animation: float 30s linear infinite reverse;
+  background: 
+    radial-gradient(circle, rgba(255,255,255,0.7) 1px, transparent 2px),
+    radial-gradient(circle, rgba(255,255,255,0.5) 2px, transparent 3px),
+    radial-gradient(circle, rgba(255,255,255,0.4) 1px, transparent 2px);
+  background-size: 120px 120px, 180px 180px, 300px 300px;
+  animation: float 20s linear infinite reverse, twinkle 4s infinite ease-in-out;
+  filter: drop-shadow(0 0 3px rgba(255,255,255,0.6));
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
 }
 
 /* Shimmer effect overlay */
