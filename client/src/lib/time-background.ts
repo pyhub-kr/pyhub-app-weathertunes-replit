@@ -392,15 +392,13 @@ export function getTimeWeatherBackground(weather?: WeatherCondition, index: numb
   const timeOfDay = getTimeOfDay();
   const condition = weather || 'default';
   
-  console.log('getTimeWeatherBackground:', { timeOfDay, condition, weather, index });
-  
   const backgrounds = timeWeatherBackgrounds[timeOfDay][condition] || 
                      timeWeatherBackgrounds[timeOfDay].default;
   
-  console.log('Available backgrounds:', backgrounds);
-  console.log('Selected background:', backgrounds[index % backgrounds.length]);
+  const selectedBackground = backgrounds[index % backgrounds.length];
+  console.log(`Background: ${timeOfDay}/${condition} [${index}/${backgrounds.length}]`);
   
-  return backgrounds[index % backgrounds.length];
+  return selectedBackground;
 }
 
 export function getBackgroundCount(weather?: WeatherCondition): number {
@@ -409,8 +407,6 @@ export function getBackgroundCount(weather?: WeatherCondition): number {
   
   const backgrounds = timeWeatherBackgrounds[timeOfDay][condition] || 
                      timeWeatherBackgrounds[timeOfDay].default;
-  
-  console.log('getBackgroundCount:', { timeOfDay, condition, count: backgrounds.length });
   
   return backgrounds.length;
 }

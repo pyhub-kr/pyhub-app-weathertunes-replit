@@ -32,15 +32,16 @@ export function WeatherBackground({ weather, isLoading }: WeatherBackgroundProps
   // Handle background click to cycle through options
   const handleBackgroundClick = (e: React.MouseEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     const weatherCondition = weather?.condition as WeatherCondition;
     const maxBackgrounds = getBackgroundCount(weatherCondition);
     const nextIndex = (backgroundIndex + 1) % maxBackgrounds;
-    console.log('Background click:', { 
-      weatherCondition, 
-      maxBackgrounds, 
-      currentIndex: backgroundIndex, 
-      nextIndex 
-    });
+    console.log('=== BACKGROUND CLICK EVENT ===');
+    console.log('Weather condition:', weatherCondition);
+    console.log('Max backgrounds:', maxBackgrounds);
+    console.log('Current index:', backgroundIndex);
+    console.log('Next index:', nextIndex);
+    console.log('==============================');
     setBackgroundIndex(nextIndex);
   };
 
@@ -78,13 +79,24 @@ export function WeatherBackground({ weather, isLoading }: WeatherBackgroundProps
         {timeDisplayName} • {currentTime.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
       </div>
       
-      {/* Debug test button */}
-      <button 
-        onClick={handleBackgroundClick}
-        className="absolute top-4 left-4 z-20 text-white text-xs font-medium bg-red-500 bg-opacity-80 rounded px-3 py-1 hover:bg-opacity-100 transition-all duration-300"
-      >
-        배경 변경 테스트
-      </button>
+      {/* Debug test buttons */}
+      <div className="absolute top-4 left-4 z-20 flex flex-col gap-2">
+        <button 
+          onClick={handleBackgroundClick}
+          className="text-white text-xs font-bold bg-red-600 rounded px-4 py-2 hover:bg-red-700 transition-all duration-300 shadow-lg"
+        >
+          배경 변경 ({backgroundIndex + 1}/{getBackgroundCount(weather?.condition as WeatherCondition)})
+        </button>
+        <button 
+          onClick={() => {
+            console.log('Manual index change');
+            setBackgroundIndex(prev => (prev + 1) % getBackgroundCount(weather?.condition as WeatherCondition));
+          }}
+          className="text-white text-xs font-bold bg-blue-600 rounded px-4 py-2 hover:bg-blue-700 transition-all duration-300 shadow-lg"
+        >
+          직접 변경
+        </button>
+      </div>
       
       {/* Enhanced Weather and Time Effects */}
       <div className="absolute inset-0 pointer-events-none z-10">
