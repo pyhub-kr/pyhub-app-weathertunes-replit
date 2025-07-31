@@ -48,9 +48,15 @@ export function SourceLinks({ currentImage, currentTrack }: SourceLinksProps) {
 
   return (
     <div 
-      className={`fixed bottom-2 right-2 z-20 transition-opacity duration-500 ${
+      className={`transition-opacity duration-500 ${
         showLinks ? 'opacity-100' : 'opacity-30'
       }`}
+      style={{
+        position: 'fixed',
+        bottom: '8px',
+        right: '8px',
+        zIndex: 20
+      }}
       onMouseEnter={() => setShowLinks(true)}
       onMouseLeave={() => setShowLinks(false)}
     >
