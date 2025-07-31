@@ -4,6 +4,33 @@ import { weatherDataSchema, locationSchema } from "@shared/schema";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Unsplash images endpoint
+  app.get('/api/unsplash/:query', async (req, res) => {
+    try {
+      const { query } = req.params;
+      const { page = 1, per_page = 20 } = req.query;
+      
+      const response = await fetch(
+        `https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&page=${page}&per_page=${per_page}&orientation=landscape`,
+        {
+          headers: {
+            'Authorization': `Client-ID ${process.env.UNSPLASH_ACCESS_KEY}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Unsplash API error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      res.json(data);
+    } catch (error) {
+      console.error('Unsplash API error:', error);
+      res.status(500).json({ error: 'Failed to fetch images from Unsplash' });
+    }
+  });
+
   // Weather API proxy using Open-Meteo (free, no API key required)
   app.get("/api/weather", async (req, res) => {
     try {

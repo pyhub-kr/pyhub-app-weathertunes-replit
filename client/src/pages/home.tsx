@@ -192,9 +192,9 @@ export default function Home() {
       {/* 키보드 단축키 도움말 (H키로 토글) - 최상위 레벨 */}
       {showHelp && (
         <>
-          {/* 배경 오버레이 - 투명 */}
+          {/* 배경 오버레이 - 완전 투명 (클릭 감지용) */}
           <div 
-            className="fixed inset-0" 
+            className="fixed inset-0 bg-transparent" 
             style={{ zIndex: 10000 }}
             onClick={() => setShowHelp(false)}
           />
@@ -225,7 +225,7 @@ export default function Home() {
                 </div>
               </div>
               <div className="mt-4 pt-3 border-t border-gray-600 text-center text-yellow-300">
-                현재 배경: {weather ? `다양한 배경` : '로딩 중...'}
+                현재 배경: 다양한 배경
               </div>
               <div className="mt-4 text-center text-gray-400 text-sm">
                 H키를 다시 누르거나 배경을 클릭하면 닫힙니다
