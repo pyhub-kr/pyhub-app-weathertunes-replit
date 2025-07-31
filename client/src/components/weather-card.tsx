@@ -1,4 +1,5 @@
 import type { WeatherData } from "@shared/schema";
+import { getTimeDisplayName, getTimeOfDay } from "@/lib/time-background";
 
 interface WeatherCardProps {
   weather: WeatherData;
@@ -14,10 +15,17 @@ const weatherIcons = {
 
 export function WeatherCard({ weather }: WeatherCardProps) {
   const icon = weatherIcons[weather.condition as keyof typeof weatherIcons] || '🌤️';
+  const timeOfDay = getTimeOfDay();
+  const timeDisplayName = getTimeDisplayName(timeOfDay);
 
   return (
     <div className="bg-white bg-opacity-10 backdrop-blur-md rounded-3xl p-8 shadow-2xl animate-slide-up">
       <div className="text-center mb-6">
+        {/* Time of Day */}
+        <div className="text-sm text-white text-opacity-60 mb-2 uppercase tracking-wider">
+          {timeDisplayName}
+        </div>
+        
         {/* Weather Icon */}
         <div className="w-24 h-24 mx-auto mb-4 animate-float text-6xl flex items-center justify-center">
           {icon}

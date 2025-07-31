@@ -1,50 +1,68 @@
 import { useEffect, useState } from "react";
 import type { WeatherData } from "@shared/schema";
+import { getTimeWeatherBackground, getTimeOfDay, getTimeDisplayName, type WeatherCondition } from "@/lib/time-background";
 
 interface WeatherBackgroundProps {
   weather: WeatherData | null;
   isLoading: boolean;
 }
 
-const weatherBackgrounds = {
-  clear: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080',
-  rain: 'https://images.unsplash.com/photo-1605727216801-e27ce1d0cc28?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080',
-  snow: 'https://images.unsplash.com/photo-1478827387698-6ba70b24ee20?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080',
-  clouds: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080',
-  fog: 'https://images.unsplash.com/photo-1486488831823-3a16c90b2b41?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080'
-};
-
 export function WeatherBackground({ weather, isLoading }: WeatherBackgroundProps) {
-  const [currentBackground, setCurrentBackground] = useState(weatherBackgrounds.clear);
+  const [currentBackground, setCurrentBackground] = useState(() => getTimeWeatherBackground());
+  const [currentTime, setCurrentTime] = useState(new Date());
 
+  // Update time every minute
   useEffect(() => {
-    if (weather?.condition && weatherBackgrounds[weather.condition as keyof typeof weatherBackgrounds]) {
-      setCurrentBackground(weatherBackgrounds[weather.condition as keyof typeof weatherBackgrounds]);
-    }
-  }, [weather?.condition]);
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 60000); // Update every minute
+
+    return () => clearInterval(timer);
+  }, []);
+
+  // Update background when weather or time changes
+  useEffect(() => {
+    const weatherCondition = weather?.condition as WeatherCondition;
+    const newBackground = getTimeWeatherBackground(weatherCondition);
+    setCurrentBackground(newBackground);
+  }, [weather?.condition, currentTime]);
+
+  const timeOfDay = getTimeOfDay();
+  const timeDisplayName = getTimeDisplayName(timeOfDay);
 
   return (
     <div className="fixed inset-0 w-full h-full transition-all duration-1000 ease-in-out">
-      {/* Background Image */}
+      {/* Gradient Background */}
       <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-1000"
-        style={{ backgroundImage: `url('${currentBackground}')` }}
+        className="absolute inset-0 transition-all duration-1000 ease-in-out"
+        style={{ background: currentBackground }}
       />
       
-      {/* Background Overlay */}
-      <div className="absolute inset-0 bg-black bg-opacity-30" />
+      {/* Subtle overlay for text readability */}
+      <div className="absolute inset-0 bg-black bg-opacity-20" />
+      
+      {/* Time display overlay */}
+      <div className="absolute top-4 right-4 z-20 text-white text-opacity-70 text-xs font-medium bg-black bg-opacity-20 rounded-full px-3 py-1 backdrop-blur-sm">
+        {timeDisplayName} • {currentTime.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
+      </div>
       
       {/* Weather Effects */}
       <div className="absolute inset-0 pointer-events-none">
         {weather?.condition === 'rain' && (
-          <div className="absolute inset-0 opacity-60">
-            {/* Rain effect could be added here with CSS animations */}
+          <div className="absolute inset-0 opacity-30">
+            <div className="rain-effect"></div>
           </div>
         )}
         
         {weather?.condition === 'snow' && (
-          <div className="absolute inset-0 opacity-70">
-            {/* Snow effect could be added here with CSS animations */}
+          <div className="absolute inset-0 opacity-40">
+            <div className="snow-effect"></div>
+          </div>
+        )}
+        
+        {weather?.condition === 'thunderstorm' && (
+          <div className="absolute inset-0 opacity-20">
+            <div className="lightning-effect"></div>
           </div>
         )}
       </div>
