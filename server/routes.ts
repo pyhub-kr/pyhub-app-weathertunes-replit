@@ -1,5 +1,6 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
+import { WebSocketServer, WebSocket } from "ws";
 import { weatherDataSchema, locationSchema } from "@shared/schema";
 import { z } from "zod";
 
@@ -126,6 +127,92 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   const httpServer = createServer(app);
+  
+  // WebSocket server for real-time user count
+  const wss = new WebSocketServer({ server: httpServer, path: '/ws' });
+  
+  // Store connected users with their status
+  const connectedUsers = new Map<string, {
+    ws: WebSocket;
+    isActive: boolean; // Page visibility status
+    lastSeen: number;
+  }>();
+  
+  function broadcastUserCount() {
+    const activeUsers = Array.from(connectedUsers.values()).filter(user => user.isActive).length;
+    const totalUsers = connectedUsers.size;
+    
+    const message = JSON.stringify({
+      type: 'userCount',
+      activeUsers,
+      totalUsers
+    });
+    
+    connectedUsers.forEach(({ ws }) => {
+      if (ws.readyState === WebSocket.OPEN) {
+        ws.send(message);
+      }
+    });
+  }
+  
+  wss.on('connection', (ws) => {
+    const userId = Math.random().toString(36).substring(2, 15);
+    
+    connectedUsers.set(userId, {
+      ws,
+      isActive: true, // Default to active when connected
+      lastSeen: Date.now()
+    });
+    
+    console.log(`User ${userId} connected. Total users: ${connectedUsers.size}`);
+    broadcastUserCount();
+    
+    ws.on('message', (data) => {
+      try {
+        const message = JSON.parse(data.toString());
+        const user = connectedUsers.get(userId);
+        
+        if (user) {
+          user.lastSeen = Date.now();
+          
+          if (message.type === 'visibility') {
+            user.isActive = message.isVisible;
+            broadcastUserCount();
+          }
+        }
+      } catch (error) {
+        console.error('WebSocket message error:', error);
+      }
+    });
+    
+    ws.on('close', () => {
+      connectedUsers.delete(userId);
+      console.log(`User ${userId} disconnected. Total users: ${connectedUsers.size}`);
+      broadcastUserCount();
+    });
+    
+    ws.on('error', (error) => {
+      console.error('WebSocket error:', error);
+      connectedUsers.delete(userId);
+      broadcastUserCount();
+    });
+  });
+  
+  // Cleanup inactive connections every 2 minutes
+  setInterval(() => {
+    const now = Date.now();
+    const timeout = 2 * 60 * 1000; // 2 minutes
+    
+    connectedUsers.forEach((user, userId) => {
+      if (now - user.lastSeen > timeout) {
+        user.ws.terminate();
+        connectedUsers.delete(userId);
+        console.log(`User ${userId} timed out`);
+      }
+    });
+    broadcastUserCount();
+  }, 60 * 1000); // Check every minute
+  
   return httpServer;
 }
 

@@ -6,6 +6,7 @@ import { YouTubePlayer } from "@/components/youtube-player";
 import { useGeolocation } from "@/hooks/use-geolocation";
 import { useWeather } from "@/hooks/use-weather";
 import { useYouTubePlayer } from "@/hooks/use-youtube-player";
+import { useUserCount } from "@/hooks/use-user-count";
 import { getPlaylistForWeather } from "@/lib/music-mapping";
 import type { MusicTrack } from "@shared/schema";
 
@@ -18,6 +19,7 @@ export default function Home() {
   
   const { location, isLoading: locationLoading, error: locationError, isUsingDefault, refreshLocation, isRefreshing } = useGeolocation();
   const { weather, isLoading: weatherLoading, error: weatherError } = useWeather(location);
+  const { userCount, isConnected } = useUserCount();
   
   const {
     isReady,
@@ -257,8 +259,21 @@ export default function Home() {
               }}>WeatherTunes</h1>
             </div>
             
-            {location && (
-              <div className="flex items-center space-x-1 sm:space-x-2 bg-black bg-opacity-30 backdrop-blur-md rounded-full px-2 sm:px-4 py-1.5 sm:py-2 border border-white border-opacity-10">
+            {/* User Count Display */}
+            <div className="flex items-center space-x-2 sm:space-x-4">
+              {isConnected && userCount.totalUsers > 0 && (
+                <div className="flex items-center space-x-1 bg-black bg-opacity-30 backdrop-blur-md rounded-full px-2 sm:px-3 py-1 sm:py-1.5 border border-white border-opacity-10">
+                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                  <span className="text-white text-xs sm:text-sm font-medium" style={{
+                    textShadow: '0 2px 8px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.6)'
+                  }}>
+                    {userCount.totalUsers}명 접속
+                  </span>
+                </div>
+              )}
+              
+              {location && (
+                <div className="flex items-center space-x-1 sm:space-x-2 bg-black bg-opacity-30 backdrop-blur-md rounded-full px-2 sm:px-4 py-1.5 sm:py-2 border border-white border-opacity-10">
                 <svg className="w-3 h-3 sm:w-4 sm:h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
                 </svg>
@@ -286,8 +301,9 @@ export default function Home() {
                     <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd" />
                   </svg>
                 </button>
-              </div>
-            )}
+                </div>
+              )}
+            </div>
           </header>
 
           {/* Main Content */}
