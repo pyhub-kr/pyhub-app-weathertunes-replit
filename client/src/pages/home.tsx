@@ -3,6 +3,7 @@ import { WeatherBackground } from "@/components/weather-background";
 import { WeatherCard } from "@/components/weather-card";
 import { MusicPlayer } from "@/components/music-player";
 import { YouTubePlayer } from "@/components/youtube-player";
+import { SourceLinks } from "@/components/source-links";
 import { useGeolocation } from "@/hooks/use-geolocation";
 import { useWeather } from "@/hooks/use-weather";
 import { useYouTubePlayer } from "@/hooks/use-youtube-player";
@@ -16,6 +17,7 @@ export default function Home() {
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [showHelp, setShowHelp] = useState(false);
   const [hasUserInteracted, setHasUserInteracted] = useState(false);
+  const [currentBackgroundImage, setCurrentBackgroundImage] = useState<any>(null);
   
   const { location, isLoading: locationLoading, error: locationError, isUsingDefault, refreshLocation, isRefreshing } = useGeolocation();
   const { weather, isLoading: weatherLoading, error: weatherError } = useWeather(location);
@@ -198,6 +200,7 @@ export default function Home() {
         isLoading={isLoading} 
         showHelp={showHelp}
         onHelpToggle={() => setShowHelp(prev => !prev)}
+        onImageChange={setCurrentBackgroundImage}
       />
       
       {/* Loading Overlay */}
@@ -396,6 +399,12 @@ export default function Home() {
           </div>
         </>
       )}
+
+      {/* Source Links */}
+      <SourceLinks 
+        currentImage={currentBackgroundImage}
+        currentTrack={currentTrack}
+      />
     </div>
   );
 }
