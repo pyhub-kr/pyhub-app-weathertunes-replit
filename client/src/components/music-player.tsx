@@ -98,7 +98,7 @@ export function MusicPlayer({
         
         <button 
           onClick={handleOpenYouTube}
-          className="text-red-500 hover:text-red-400 transition-all duration-200 hover:scale-110 active:scale-95"
+          className="text-white text-opacity-70 hover:text-opacity-100 transition-all duration-200 hover:scale-110 active:scale-95"
           title="YouTube에서 보기"
         >
           <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
