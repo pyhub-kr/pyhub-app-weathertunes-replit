@@ -1,0 +1,36 @@
+{
+  "name": "WeatherTunes - 날씨 기반 음악 스트리밍",
+  "short_name": "WeatherTunes",
+  "description": "현재 날씨에 맞는 음악을 자동으로 재생하는 웹 앱",
+  "start_url": "/",
+  "display": "fullscreen",
+  "orientation": "portrait",
+  "theme_color": "#1e293b",
+  "background_color": "#0f172a",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png", 
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "새 음악",
+      "short_name": "새 음악",
+      "description": "새로운 날씨 기반 음악 재생",
+      "url": "/?action=refresh",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    }
+  ],
+  "categories": ["music", "weather", "entertainment"],
+  "lang": "ko",
+  "dir": "ltr"
+}

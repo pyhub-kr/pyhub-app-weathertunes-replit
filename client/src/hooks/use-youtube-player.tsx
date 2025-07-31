@@ -63,9 +63,19 @@ export function useYouTubePlayer() {
             setIsPlaying(true);
             playStartRef.current = Date.now();
             startTimeTracking();
+            
+            // Update media session for background control
+            if ('mediaSession' in navigator) {
+              navigator.mediaSession.playbackState = 'playing';
+            }
           } else {
             setIsPlaying(false);
             stopTimeTracking();
+            
+            // Update media session
+            if ('mediaSession' in navigator) {
+              navigator.mediaSession.playbackState = 'paused';
+            }
           }
 
           if (state === window.YT.PlayerState.ENDED) {
@@ -138,7 +148,7 @@ export function useYouTubePlayer() {
     }
   }, []);
 
-  const loadVideo = useCallback((videoId: string) => {
+  const loadVideo = useCallback((videoId: string, trackTitle?: string, trackMood?: string) => {
     if (playerRef.current && playerRef.current.loadVideoById) {
       playerRef.current.loadVideoById(videoId);
       // Reset time counters for new video
@@ -146,6 +156,26 @@ export function useYouTubePlayer() {
       playStartRef.current = 0;
       setCurrentTime(0);
       setDuration(240); // 4 minutes estimated
+      
+      // Set up media session metadata for background control
+      if ('mediaSession' in navigator && trackTitle) {
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: trackTitle,
+          artist: 'WeatherTunes',
+          album: trackMood || '날씨 기반 음악',
+          artwork: [
+            { src: '/icon-192.png', sizes: '192x192', type: 'image/png' }
+          ]
+        });
+        
+        // Set up action handlers
+        navigator.mediaSession.setActionHandler('play', () => {
+          if (playerRef.current) playerRef.current.playVideo();
+        });
+        navigator.mediaSession.setActionHandler('pause', () => {
+          if (playerRef.current) playerRef.current.pauseVideo();
+        });
+      }
     }
   }, []);
 

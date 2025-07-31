@@ -49,16 +49,16 @@ export function MusicPlayer({
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
 
   return (
-    <div className="bg-white bg-opacity-10 backdrop-blur-md rounded-3xl p-6 shadow-2xl animate-slide-up">
+    <div className="bg-white bg-opacity-10 backdrop-blur-md rounded-3xl p-4 shadow-2xl animate-slide-up">
       {/* Currently Playing Info */}
-      <div className="text-center mb-6">
-        <div className="text-white text-opacity-70 text-sm mb-1">현재 재생 중</div>
-        <div className="text-white text-lg font-medium mb-1">{track.title}</div>
+      <div className="text-center mb-4">
+        <div className="text-white text-opacity-70 text-xs mb-1">현재 재생 중</div>
+        <div className="text-white text-base font-medium mb-1 truncate">{track.title}</div>
         <div className="text-white text-opacity-80 text-sm">{track.mood}</div>
       </div>
       
       {/* Music Controls */}
-      <div className="flex items-center justify-center space-x-6 mb-6">
+      <div className="flex items-center justify-center space-x-4 mb-4">
         <button 
           onClick={onPrevious}
           className="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-opacity-30 transition-all duration-200"

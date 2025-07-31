@@ -43,7 +43,7 @@ export default function Home() {
   // Load current track when it changes
   useEffect(() => {
     if (currentTrack && isReady) {
-      loadVideo(currentTrack.youtubeId);
+      loadVideo(currentTrack.youtubeId, currentTrack.title, currentTrack.mood);
     }
   }, [currentTrack, isReady, loadVideo]);
 
@@ -123,7 +123,7 @@ export default function Home() {
       {!isLoading && !hasError && (
         <div className="relative z-10 flex flex-col min-h-screen">
           {/* Header */}
-          <header className="flex justify-between items-center p-6 lg:p-8">
+          <header className="flex justify-between items-center p-4 lg:p-6">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center backdrop-blur-sm">
                 <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
@@ -150,8 +150,8 @@ export default function Home() {
           </header>
 
           {/* Main Content */}
-          <main className="flex-1 flex items-center justify-center p-6">
-            <div className="w-full max-w-md mx-auto space-y-8">
+          <main className="flex-1 flex items-center justify-center px-4 py-2 min-h-0">
+            <div className="w-full max-w-sm mx-auto space-y-4 flex flex-col justify-center">
               {weather && <WeatherCard weather={weather} />}
               
               {currentTrack && (
@@ -173,8 +173,8 @@ export default function Home() {
           </main>
 
           {/* Footer */}
-          <footer className="p-6 text-center">
-            <div className="text-white text-opacity-60 text-sm">
+          <footer className="p-3 text-center">
+            <div className="text-white text-opacity-60 text-xs">
               마지막 업데이트: {weather?.lastUpdated ? 
                 new Date(weather.lastUpdated).toLocaleTimeString('ko-KR', {
                   hour: '2-digit',
