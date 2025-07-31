@@ -107,15 +107,7 @@ export function WeatherBackground({ weather, isLoading, showHelp, onHelpToggle }
         <ParticleEffects condition={weather.condition} intensity={0.8} />
       )}
       
-      {/* 시간 정보 (좌상단) */}
-      <div className="absolute top-6 left-6 z-20 text-white text-opacity-90 text-sm font-medium">
-        <div className="bg-black bg-opacity-40 rounded-full px-3 py-1 backdrop-blur-sm">
-          {getTimeDisplayName(getTimeOfDay())} {currentTime.toLocaleTimeString('ko-KR', {
-            hour: '2-digit',
-            minute: '2-digit'
-          })}
-        </div>
-      </div>
+
       
 
       
