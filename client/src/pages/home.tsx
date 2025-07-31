@@ -15,7 +15,7 @@ export default function Home() {
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [showHelp, setShowHelp] = useState(false);
   
-  const { location, isLoading: locationLoading, error: locationError, isUsingDefault } = useGeolocation();
+  const { location, isLoading: locationLoading, error: locationError, isUsingDefault, refreshLocation, isRefreshing } = useGeolocation();
   const { weather, isLoading: weatherLoading, error: weatherError } = useWeather(location);
   
   const {
@@ -109,6 +109,14 @@ export default function Home() {
     }
   };
 
+  // 위치가 변경되면 음악도 새로 고침
+  useEffect(() => {
+    if (location && weather?.condition && currentTrack) {
+      console.log("Location changed, refreshing music for condition:", weather.condition);
+      handleRefresh();
+    }
+  }, [location?.city, location?.country]); // 도시나 국가가 변경되면 트리거
+
   const isLoading = locationLoading || weatherLoading;
   // Only show error if we have a real error AND we're not using default location successfully
   const hasError = (locationError && !isUsingDefault) || weatherError;
@@ -124,11 +132,13 @@ export default function Home() {
       />
       
       {/* Loading Overlay */}
-      {isLoading && (
+      {(isLoading || isRefreshing) && (
         <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 flex items-center justify-center">
           <div className="bg-white bg-opacity-10 backdrop-blur-md rounded-2xl p-8 text-center">
             <div className="animate-spin w-8 h-8 border-2 border-white border-t-transparent rounded-full mx-auto mb-4"></div>
-            <div className="text-white text-lg">날씨 정보를 가져오는 중...</div>
+            <div className="text-white text-lg">
+              {isRefreshing ? "위치 정보를 새로고침 중..." : "날씨 정보를 가져오는 중..."}
+            </div>
           </div>
         </div>
       )}
@@ -153,7 +163,7 @@ export default function Home() {
       )}
 
       {/* Main Interface */}
-      {!isLoading && !hasError && (
+      {!isLoading && !hasError && !isRefreshing && (
         <div className="relative z-10 flex flex-col min-h-screen">
           {/* Header */}
           <header className="flex justify-between items-center p-4 lg:p-6">
@@ -172,6 +182,20 @@ export default function Home() {
                     <span className="text-white text-opacity-70 text-xs ml-1">(기본위치)</span>
                   )}
                 </span>
+                <button
+                  onClick={refreshLocation}
+                  disabled={isRefreshing}
+                  className="ml-2 p-1 hover:bg-white hover:bg-opacity-10 rounded-full transition-all duration-200 disabled:opacity-50"
+                  title="위치 새로고침"
+                >
+                  <svg 
+                    className={`w-3 h-3 text-white transition-transform duration-500 ${isRefreshing ? 'animate-spin' : 'hover:rotate-180'}`} 
+                    fill="currentColor" 
+                    viewBox="0 0 20 20"
+                  >
+                    <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd" />
+                  </svg>
+                </button>
               </div>
             )}
           </header>

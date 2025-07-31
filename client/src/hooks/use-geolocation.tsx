@@ -12,6 +12,13 @@ export function useGeolocation() {
   const [coordinates, setCoordinates] = useState<{lat: number, lon: number} | null>(null);
   const [locationError, setLocationError] = useState<string | null>(null);
   const [isUsingDefault, setIsUsingDefault] = useState(false);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const refreshLocation = () => {
+    setIsRefreshing(true);
+    setRefreshTrigger(prev => prev + 1);
+  };
 
   useEffect(() => {
     if (!navigator.geolocation) {
@@ -39,6 +46,7 @@ export function useGeolocation() {
         });
         setLocationError(null);
         setIsUsingDefault(false);
+        setIsRefreshing(false);
       },
       (error) => {
         clearTimeout(locationTimeout);
@@ -61,6 +69,7 @@ export function useGeolocation() {
         setCoordinates(DEFAULT_DAEJEON_COORDINATES);
         setIsUsingDefault(true);
         setLocationError(null); // Clear error since we're using default location
+        setIsRefreshing(false);
       },
       {
         enableHighAccuracy: true,
@@ -70,7 +79,7 @@ export function useGeolocation() {
     );
 
     return () => clearTimeout(locationTimeout);
-  }, []);
+  }, [refreshTrigger]);
 
   const { data: location, isLoading, error } = useQuery<Location>({
     queryKey: [`/api/geocode?lat=${coordinates?.lat}&lon=${coordinates?.lon}`],
@@ -82,5 +91,7 @@ export function useGeolocation() {
     isLoading: isLoading && !!coordinates,
     error: locationError || (error as Error)?.message,
     isUsingDefault,
+    refreshLocation,
+    isRefreshing,
   };
 }
