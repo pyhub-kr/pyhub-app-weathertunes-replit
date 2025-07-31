@@ -75,11 +75,7 @@ export function useUnsplashBackgrounds(condition: string | undefined, timeOfDay:
   const changeBackground = (direction: 'next' | 'prev' | 'random' = 'next') => {
     if (!images?.results?.length || isTransitioning) return;
 
-    // 이전 이미지 인덱스 저장
-    setPreviousImageIndex(currentImageIndex);
-    setIsTransitioning(true);
-    
-    // 새 이미지 인덱스 설정
+    // 새 이미지 인덱스 계산
     let newIndex;
     if (direction === 'random') {
       newIndex = Math.floor(Math.random() * images.results.length);
@@ -89,12 +85,18 @@ export function useUnsplashBackgrounds(condition: string | undefined, timeOfDay:
       newIndex = currentImageIndex > 0 ? currentImageIndex - 1 : images.results.length - 1;
     }
     
+    // 같은 이미지면 건너뛰기
+    if (newIndex === currentImageIndex) return;
+    
+    // 이전 이미지 저장하고 전환 시작
+    setPreviousImageIndex(currentImageIndex);
     setCurrentImageIndex(newIndex);
+    setIsTransitioning(true);
     
     // 전환 애니메이션 완료 후 상태 정리
     setTimeout(() => {
       setIsTransitioning(false);
-    }, 800);
+    }, 1000);
   };
 
   // 자동 배경 변경 (10분마다)

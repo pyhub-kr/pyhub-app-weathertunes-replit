@@ -76,20 +76,18 @@ export function WeatherBackground({ weather, isLoading, showHelp, onHelpToggle }
 
   return (
     <div className="fixed inset-0 w-full h-full">
-      {/* 이전 배경 이미지 (전환 시에만 표시) */}
-      {isTransitioning && previousBackgroundUrl && (
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage: `url(${previousBackgroundUrl})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            zIndex: 1
-          }}
-        />
-      )}
+      {/* 기본 배경 이미지 (항상 표시) */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: previousBackgroundUrl ? `url(${previousBackgroundUrl})` : fallbackGradient,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          zIndex: 1
+        }}
+      />
       
-      {/* 현재 배경 이미지 */}
+      {/* 새 배경 이미지 (전환 시 페이드 인) */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-1000 ease-in-out"
         style={{
@@ -97,7 +95,7 @@ export function WeatherBackground({ weather, isLoading, showHelp, onHelpToggle }
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           zIndex: 2,
-          opacity: isTransitioning ? 1 : 1
+          opacity: isTransitioning ? 1 : (currentBackgroundUrl === previousBackgroundUrl ? 0 : 1)
         }}
       />
       
