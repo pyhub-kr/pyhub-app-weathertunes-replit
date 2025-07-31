@@ -81,9 +81,13 @@ export function useYouTubePlayer() {
         const currentTime = playerRef.current.getCurrentTime();
         const duration = playerRef.current.getDuration ? playerRef.current.getDuration() : 0;
         
-        // Validate and limit time values (max 24 hours = 86400 seconds)
-        const validCurrentTime = (currentTime && currentTime > 0 && currentTime <= 86400) ? currentTime : 0;
-        const validDuration = (duration && duration > 0 && duration <= 86400) ? duration : 0;
+        console.log('Raw YouTube times:', { currentTime, duration });
+        
+        // Accept any positive time value (remove the upper limit that was too restrictive)
+        const validCurrentTime = (currentTime >= 0) ? currentTime : 0;
+        const validDuration = (duration > 0) ? duration : 0;
+        
+        console.log('Valid times:', { validCurrentTime, validDuration });
         
         setCurrentTime(validCurrentTime);
         setDuration(validDuration);

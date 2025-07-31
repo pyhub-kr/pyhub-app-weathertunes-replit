@@ -28,8 +28,8 @@ export function MusicPlayer({
   onRefresh,
 }: MusicPlayerProps) {
   const formatTime = (seconds: number) => {
-    // Handle invalid or extremely large values
-    if (!seconds || seconds < 0 || seconds > 86400) { // 24 hours max
+    // Handle invalid values
+    if (isNaN(seconds) || seconds < 0) {
       return "0:00";
     }
     
