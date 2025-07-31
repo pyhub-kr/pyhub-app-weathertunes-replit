@@ -12,6 +12,10 @@ interface UnsplashImage {
   alt_description: string | null;
   user: {
     name: string;
+    username: string;
+  };
+  links: {
+    html: string;
   };
 }
 
