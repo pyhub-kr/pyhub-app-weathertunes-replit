@@ -164,32 +164,32 @@ export default function Home() {
 
       {/* Main Interface */}
       {!isLoading && !hasError && !isRefreshing && (
-        <div className="relative z-10 flex flex-col min-h-screen">
+        <div className="relative z-10 flex flex-col h-screen safe-area-inset overflow-hidden">
           {/* Header */}
-          <header className="flex justify-between items-center p-4 lg:p-6">
+          <header className="flex justify-between items-center p-3 sm:p-4 lg:p-6 flex-shrink-0">
             <div className="flex items-center">
-              <h1 className="text-white text-xl lg:text-2xl font-semibold">WeatherTunes</h1>
+              <h1 className="text-white text-lg sm:text-xl lg:text-2xl font-semibold">WeatherTunes</h1>
             </div>
             
             {location && (
-              <div className="flex items-center space-x-2 bg-white bg-opacity-10 backdrop-blur-md rounded-full px-4 py-2">
-                <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+              <div className="flex items-center space-x-1 sm:space-x-2 bg-white bg-opacity-10 backdrop-blur-md rounded-full px-2 sm:px-4 py-1.5 sm:py-2">
+                <svg className="w-3 h-3 sm:w-4 sm:h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
                 </svg>
-                <span className="text-white text-sm font-medium">
+                <span className="text-white text-xs sm:text-sm font-medium">
                   {location.city || "위치 정보"}
                   {isUsingDefault && (
-                    <span className="text-white text-opacity-70 text-xs ml-1">(기본위치)</span>
+                    <span className="text-white text-opacity-70 text-xs ml-1 hidden sm:inline">(기본위치)</span>
                   )}
                 </span>
                 <button
                   onClick={refreshLocation}
                   disabled={isRefreshing}
-                  className="ml-2 p-1 hover:bg-white hover:bg-opacity-10 rounded-full transition-all duration-200 disabled:opacity-50"
+                  className="ml-1 sm:ml-2 p-0.5 sm:p-1 hover:bg-white hover:bg-opacity-10 rounded-full transition-all duration-200 disabled:opacity-50"
                   title="위치 새로고침"
                 >
                   <svg 
-                    className={`w-3 h-3 text-white transition-transform duration-500 ${isRefreshing ? 'animate-spin' : 'hover:rotate-180'}`} 
+                    className={`w-2.5 h-2.5 sm:w-3 sm:h-3 text-white transition-transform duration-500 ${isRefreshing ? 'animate-spin' : 'hover:rotate-180'}`} 
                     fill="currentColor" 
                     viewBox="0 0 20 20"
                   >
@@ -201,8 +201,8 @@ export default function Home() {
           </header>
 
           {/* Main Content */}
-          <main className="flex-1 flex items-center justify-center px-4 py-2 min-h-0">
-            <div className="w-full max-w-sm mx-auto space-y-4 flex flex-col justify-center">
+          <main className="flex-1 flex items-center justify-center px-3 sm:px-4 py-1 sm:py-2 min-h-0 overflow-y-auto">
+            <div className="w-full max-w-xs sm:max-w-sm mx-auto space-y-2 sm:space-y-3 lg:space-y-4 flex flex-col justify-center">
               {weather && <WeatherCard weather={weather} />}
               
               {currentTrack && (
@@ -219,7 +219,7 @@ export default function Home() {
           </main>
 
           {/* Footer */}
-          <footer className="p-3 text-center">
+          <footer className="p-2 sm:p-3 text-center flex-shrink-0">
             <div className="text-white text-opacity-60 text-xs">
               마지막 업데이트: {weather?.lastUpdated ? 
                 new Date(weather.lastUpdated).toLocaleTimeString('ko-KR', {
@@ -249,39 +249,39 @@ export default function Home() {
             className="fixed inset-0 flex items-center justify-center pointer-events-none" 
             style={{ zIndex: 10001 }}
           >
-            <div className="bg-black text-white text-lg rounded-xl p-6 transition-all duration-300 max-w-md w-full mx-4 shadow-2xl border-2 border-white border-opacity-50 pointer-events-auto"
+            <div className="bg-black text-white text-sm sm:text-lg rounded-xl p-4 sm:p-6 transition-all duration-300 max-w-xs sm:max-w-md w-full mx-4 shadow-2xl border-2 border-white border-opacity-50 pointer-events-auto"
                  style={{ backgroundColor: 'rgba(0, 0, 0, 0.95)' }}>
-              <div className="font-bold mb-4 text-center text-xl">키보드 단축키</div>
-              <div className="space-y-3">
+              <div className="font-bold mb-3 sm:mb-4 text-center text-lg sm:text-xl">키보드 단축키</div>
+              <div className="space-y-2 sm:space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-300 font-mono">스페이스바 / →</span>
-                  <span>다음 배경</span>
+                  <span className="text-gray-300 font-mono text-xs sm:text-sm">스페이스바 / →</span>
+                  <span className="text-xs sm:text-base">다음 배경</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-300 font-mono">←</span>
-                  <span>이전 배경</span>
+                  <span className="text-gray-300 font-mono text-xs sm:text-sm">←</span>
+                  <span className="text-xs sm:text-base">이전 배경</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-300 font-mono">B</span>
-                  <span>배경 변경</span>
+                  <span className="text-gray-300 font-mono text-xs sm:text-sm">B</span>
+                  <span className="text-xs sm:text-base">배경 변경</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-300 font-mono">↑</span>
-                  <span>볼륨 증가</span>
+                  <span className="text-gray-300 font-mono text-xs sm:text-sm">↑</span>
+                  <span className="text-xs sm:text-base">볼륨 증가</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-300 font-mono">↓</span>
-                  <span>볼륨 감소</span>
+                  <span className="text-gray-300 font-mono text-xs sm:text-sm">↓</span>
+                  <span className="text-xs sm:text-base">볼륨 감소</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-300 font-mono">H</span>
-                  <span>도움말 토글</span>
+                  <span className="text-gray-300 font-mono text-xs sm:text-sm">H</span>
+                  <span className="text-xs sm:text-base">도움말 토글</span>
                 </div>
               </div>
-              <div className="mt-4 pt-3 border-t border-gray-600 text-center text-yellow-300">
+              <div className="mt-3 sm:mt-4 pt-2 sm:pt-3 border-t border-gray-600 text-center text-yellow-300 text-xs sm:text-base">
                 현재 배경: 다양한 배경
               </div>
-              <div className="mt-4 text-center text-gray-400 text-sm">
+              <div className="mt-3 sm:mt-4 text-center text-gray-400 text-xs">
                 H키를 다시 누르거나 배경을 클릭하면 닫힙니다
               </div>
             </div>
