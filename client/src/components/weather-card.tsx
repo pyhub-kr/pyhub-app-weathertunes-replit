@@ -30,12 +30,16 @@ export function WeatherCard({ weather }: WeatherCardProps) {
   }, []);
 
   return (
-    <div className="bg-white bg-opacity-10 backdrop-blur-md rounded-3xl p-4 sm:p-6 lg:p-8 shadow-2xl animate-slide-up hover:bg-opacity-15 transition-all duration-300 hover:scale-105 hover:shadow-3xl">
+    <div className="bg-black bg-opacity-30 backdrop-blur-md rounded-3xl p-4 sm:p-6 lg:p-8 shadow-2xl animate-slide-up hover:bg-opacity-40 transition-all duration-300 hover:scale-105 hover:shadow-3xl border border-white border-opacity-10">
       <div className="text-center mb-4 sm:mb-6">
         {/* Time of Day and Current Time */}
-        <div className="text-xs sm:text-sm text-white text-opacity-70 mb-2 uppercase tracking-wider">
+        <div className="text-xs sm:text-sm text-white mb-2 uppercase tracking-wider" style={{
+          textShadow: '0 2px 8px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.6)'
+        }}>
           <div className="animate-pulse">{timeDisplayName}</div>
-          <div className="mt-1 text-xs text-white text-opacity-60">
+          <div className="mt-1 text-xs text-white" style={{
+            textShadow: '0 2px 8px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.6)'
+          }}>
             {currentTime.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
           </div>
         </div>
@@ -46,17 +50,23 @@ export function WeatherCard({ weather }: WeatherCardProps) {
         </div>
         
         {/* Temperature */}
-        <div className="text-4xl sm:text-5xl lg:text-6xl font-light text-white mb-2">
+        <div className="text-4xl sm:text-5xl lg:text-6xl font-light text-white mb-2" style={{
+          textShadow: '0 2px 8px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.6)'
+        }}>
           {weather.temperature}°
         </div>
         
         {/* Weather Description */}
-        <div className="text-lg sm:text-xl text-white text-opacity-90 mb-3 sm:mb-4 capitalize">
+        <div className="text-lg sm:text-xl text-white mb-3 sm:mb-4 capitalize" style={{
+          textShadow: '0 2px 8px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.6)'
+        }}>
           {weather.description}
         </div>
         
         {/* Additional Weather Info */}
-        <div className="flex justify-between text-white text-opacity-70 text-xs sm:text-sm">
+        <div className="flex justify-between text-white text-xs sm:text-sm" style={{
+          textShadow: '0 2px 8px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.6)'
+        }}>
           <div className="flex items-center space-x-1">
             <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 20 20">
               <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
