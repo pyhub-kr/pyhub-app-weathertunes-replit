@@ -49,7 +49,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Geocoding API proxy
+  // Simple geocoding - return basic location info without external API
   app.get("/api/geocode", async (req, res) => {
     try {
       const query = z.object({
@@ -57,33 +57,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
         lon: z.string(),
       }).parse(req.query);
 
-      const apiKey = process.env.OPENWEATHER_API_KEY || process.env.VITE_OPENWEATHER_API_KEY || "demo_key";
-      
-      const response = await fetch(
-        `https://api.openweathermap.org/geo/1.0/reverse?lat=${query.lat}&lon=${query.lon}&limit=1&appid=${apiKey}`
-      );
+      const lat = parseFloat(query.lat);
+      const lon = parseFloat(query.lon);
 
-      if (!response.ok) {
-        throw new Error(`Geocoding API error: ${response.status}`);
-      }
+      // Simple location detection based on coordinates
+      let city = "현재 위치";
+      let country = "KR";
 
-      const data = await response.json();
-      
-      if (data.length === 0) {
-        throw new Error("Location not found");
+      // Basic Korean region detection
+      if (lat >= 37.4 && lat <= 37.7 && lon >= 126.8 && lon <= 127.2) {
+        city = "서울";
+      } else if (lat >= 35.0 && lat <= 35.3 && lon >= 128.9 && lon <= 129.3) {
+        city = "부산";
+      } else if (lat >= 36.2 && lat <= 36.5 && lon >= 127.3 && lon <= 127.5) {
+        city = "대전";
+      } else if (lat >= 35.8 && lat <= 36.0 && lon >= 127.0 && lon <= 127.2) {
+        city = "대구";
+      } else if (lat >= 37.2 && lat <= 37.4 && lon >= 126.6 && lon <= 127.0) {
+        city = "인천";
+      } else if (lat >= 35.1 && lat <= 35.3 && lon >= 126.8 && lon <= 127.2) {
+        city = "광주";
+      } else if (lat >= 36.5 && lat <= 36.7 && lon >= 127.3 && lon <= 127.5) {
+        city = "세종";
       }
 
       const locationData = {
-        latitude: parseFloat(query.lat),
-        longitude: parseFloat(query.lon),
-        city: data[0].local_names?.ko || data[0].name,
-        country: data[0].country,
+        latitude: lat,
+        longitude: lon,
+        city: city,
+        country: country,
       };
 
       const validatedData = locationSchema.parse(locationData);
       res.json(validatedData);
     } catch (error) {
-      console.error("Geocoding API error:", error);
+      console.error("Geocoding error:", error);
       res.status(500).json({ 
         error: "위치 정보를 가져올 수 없습니다." 
       });

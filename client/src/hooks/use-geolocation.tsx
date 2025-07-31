@@ -73,7 +73,7 @@ export function useGeolocation() {
   }, []);
 
   const { data: location, isLoading, error } = useQuery<Location>({
-    queryKey: ['/api/geocode', coordinates?.lat, coordinates?.lon],
+    queryKey: [`/api/geocode?lat=${coordinates?.lat}&lon=${coordinates?.lon}`],
     enabled: !!coordinates,
   });
 
