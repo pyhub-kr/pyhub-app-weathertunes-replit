@@ -25,6 +25,7 @@ export function WeatherBackground({ weather, isLoading }: WeatherBackgroundProps
   useEffect(() => {
     const weatherCondition = weather?.condition as WeatherCondition;
     const newBackground = getTimeWeatherBackground(weatherCondition, backgroundIndex);
+    console.log('Background updated:', { weatherCondition, backgroundIndex, newBackground });
     setCurrentBackground(newBackground);
   }, [weather?.condition, currentTime, backgroundIndex]);
 
@@ -32,6 +33,7 @@ export function WeatherBackground({ weather, isLoading }: WeatherBackgroundProps
   const handleBackgroundClick = () => {
     const weatherCondition = weather?.condition as WeatherCondition;
     const maxBackgrounds = getBackgroundCount(weatherCondition);
+    console.log('Background click:', { weatherCondition, maxBackgrounds, currentIndex: backgroundIndex });
     setBackgroundIndex((prev) => (prev + 1) % maxBackgrounds);
   };
 
