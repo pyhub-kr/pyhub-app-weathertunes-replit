@@ -17,6 +17,7 @@ export function useYouTubePlayer() {
   const intervalRef = useRef<NodeJS.Timeout>();
   const startTimeRef = useRef<number>(0);
   const playStartRef = useRef<number>(0);
+  const onTrackEndRef = useRef<(() => void) | null>(null);
 
   useEffect(() => {
     // Load YouTube IFrame API if not already loaded
@@ -82,7 +83,10 @@ export function useYouTubePlayer() {
           }
 
           if (state === window.YT.PlayerState.ENDED) {
-            // Could trigger next track here
+            // 곡이 끝났을 때 콜백 실행
+            if (onTrackEndRef.current) {
+              onTrackEndRef.current();
+            }
           }
         },
       },
@@ -187,6 +191,10 @@ export function useYouTubePlayer() {
     }
   }, []);
 
+  const setOnTrackEnd = useCallback((callback: (() => void) | null) => {
+    onTrackEndRef.current = callback;
+  }, []);
+
   return {
     isReady,
     isPlaying,
@@ -198,5 +206,6 @@ export function useYouTubePlayer() {
     seekTo,
     setVolume: setPlayerVolume,
     loadVideo,
+    setOnTrackEnd,
   };
 }

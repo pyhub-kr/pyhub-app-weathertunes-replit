@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { WeatherBackground } from "@/components/weather-background";
 import { WeatherCard } from "@/components/weather-card";
 import { MusicPlayer } from "@/components/music-player";
@@ -29,6 +29,7 @@ export default function Home() {
     seekTo,
     setVolume: setPlayerVolume,
     loadVideo,
+    setOnTrackEnd,
   } = useYouTubePlayer();
 
   // Update playlist when weather changes
@@ -56,21 +57,28 @@ export default function Home() {
     }
   };
 
-  const handlePrevious = () => {
+  const handlePrevious = useCallback(() => {
     if (playlist.length > 0) {
       const newIndex = currentTrackIndex > 0 ? currentTrackIndex - 1 : playlist.length - 1;
       setCurrentTrackIndex(newIndex);
       setCurrentTrack(playlist[newIndex]);
     }
-  };
+  }, [playlist, currentTrackIndex]);
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     if (playlist.length > 0) {
       const newIndex = currentTrackIndex < playlist.length - 1 ? currentTrackIndex + 1 : 0;
       setCurrentTrackIndex(newIndex);
       setCurrentTrack(playlist[newIndex]);
     }
-  };
+  }, [playlist, currentTrackIndex]);
+
+  // 트랙이 끝났을 때 자동으로 다음 곡 재생
+  useEffect(() => {
+    if (setOnTrackEnd) {
+      setOnTrackEnd(handleNext);
+    }
+  }, [setOnTrackEnd, handleNext]);
 
   const handleRefresh = () => {
     if (weather?.condition) {
