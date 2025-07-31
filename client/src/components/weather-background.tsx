@@ -117,12 +117,7 @@ export function WeatherBackground({ weather, isLoading, showHelp, onHelpToggle }
         </div>
       </div>
       
-      {/* 배경 인덱스 (좌하단) */}
-      {totalImages > 0 && (
-        <div className="absolute bottom-6 left-6 z-20 text-white text-opacity-80 text-xs font-medium bg-black bg-opacity-40 rounded-full px-3 py-1 backdrop-blur-sm transition-all duration-300">
-          배경 {currentIndex + 1}/{totalImages}
-        </div>
-      )}
+
       
 
       
