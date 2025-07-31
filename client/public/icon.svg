@@ -1,0 +1,27 @@
+<svg width="192" height="192" viewBox="0 0 192 192" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="192" height="192" rx="24" fill="url(#gradient)"/>
+  
+  <!-- Weather Cloud -->
+  <path d="M96 48C108.15 48 118 57.85 118 70C130.15 70 140 79.85 140 92C140 104.15 130.15 114 118 114H66C56.06 114 48 105.94 48 96C48 86.06 56.06 78 66 78C68.42 78 70.68 78.54 72.68 79.48C76.86 63.18 85.32 48 96 48Z" fill="white" fill-opacity="0.9"/>
+  
+  <!-- Music Notes -->
+  <circle cx="80" cy="130" r="8" fill="#60A5FA"/>
+  <circle cx="112" cy="130" r="8" fill="#60A5FA"/>
+  <path d="M80 122V98L96 94V118" stroke="#60A5FA" stroke-width="3" stroke-linecap="round"/>
+  <path d="M112 122V98L128 94V118" stroke="#60A5FA" stroke-width="3" stroke-linecap="round"/>
+  
+  <!-- Sun rays -->
+  <circle cx="96" cy="60" r="4" fill="#FCD34D" fill-opacity="0.8"/>
+  <rect x="94" y="32" width="4" height="12" rx="2" fill="#FCD34D" fill-opacity="0.6"/>
+  <rect x="94" y="148" width="4" height="12" rx="2" fill="#FCD34D" fill-opacity="0.6"/>
+  <rect x="32" y="58" width="12" height="4" rx="2" fill="#FCD34D" fill-opacity="0.6"/>
+  <rect x="148" y="58" width="12" height="4" rx="2" fill="#FCD34D" fill-opacity="0.6"/>
+  
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e293b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0f172a;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+</svg>
