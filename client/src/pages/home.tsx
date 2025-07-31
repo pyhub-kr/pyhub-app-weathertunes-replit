@@ -14,6 +14,7 @@ export default function Home() {
   const [playlist, setPlaylist] = useState<MusicTrack[]>([]);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [showHelp, setShowHelp] = useState(false);
+  const [hasUserInteracted, setHasUserInteracted] = useState(false);
   
   const { location, isLoading: locationLoading, error: locationError, isUsingDefault, refreshLocation, isRefreshing } = useGeolocation();
   const { weather, isLoading: weatherLoading, error: weatherError } = useWeather(location);
@@ -42,12 +43,43 @@ export default function Home() {
     }
   }, [weather?.condition]);
 
-  // Load current track when it changes
+  // Load current track when it changes and auto-play if user has interacted
   useEffect(() => {
     if (currentTrack && isReady) {
       loadVideo(currentTrack.youtubeId, currentTrack.title, currentTrack.mood);
+      // Auto-play after a brief delay to ensure video is loaded
+      if (hasUserInteracted) {
+        setTimeout(() => {
+          play();
+        }, 1000);
+      }
     }
-  }, [currentTrack, isReady, loadVideo]);
+  }, [currentTrack, isReady, loadVideo, play, hasUserInteracted]);
+
+  // Enable auto-play after first user interaction
+  useEffect(() => {
+    const enableAutoplay = () => {
+      setHasUserInteracted(true);
+      // Auto-play current track if it's loaded and not playing
+      if (currentTrack && isReady && !isPlaying) {
+        setTimeout(() => {
+          play();
+        }, 500);
+      }
+    };
+
+    if (!hasUserInteracted) {
+      document.addEventListener('click', enableAutoplay, { once: true });
+      document.addEventListener('keydown', enableAutoplay, { once: true });
+      document.addEventListener('touchstart', enableAutoplay, { once: true });
+
+      return () => {
+        document.removeEventListener('click', enableAutoplay);
+        document.removeEventListener('keydown', enableAutoplay);
+        document.removeEventListener('touchstart', enableAutoplay);
+      };
+    }
+  }, [hasUserInteracted, currentTrack, isReady, isPlaying, play]);
 
   const handlePlayPause = () => {
     if (isPlaying) {
@@ -159,6 +191,13 @@ export default function Home() {
               다시 시도
             </button>
           </div>
+        </div>
+      )}
+
+      {/* Auto-play Notice */}
+      {!hasUserInteracted && currentTrack && (
+        <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-40 bg-black bg-opacity-80 backdrop-blur-md rounded-full px-4 py-2 text-white text-sm animate-pulse">
+          화면을 터치하면 음악이 자동 재생됩니다 🎵
         </div>
       )}
 
