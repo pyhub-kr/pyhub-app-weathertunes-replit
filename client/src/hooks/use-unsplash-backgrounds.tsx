@@ -51,7 +51,8 @@ const getSearchKeywords = (condition: string, timeOfDay: 'dawn' | 'morning' | 'a
 
 export function useUnsplashBackgrounds(condition: string | undefined, timeOfDay: 'dawn' | 'morning' | 'afternoon' | 'evening' | 'night') {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [backgroundTransition, setBackgroundTransition] = useState(false);
+  const [previousImageIndex, setPreviousImageIndex] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   const searchQuery = condition ? getSearchKeywords(condition, timeOfDay) : 'beautiful nature landscape';
 
@@ -69,22 +70,31 @@ export function useUnsplashBackgrounds(condition: string | undefined, timeOfDay:
   });
 
   const currentImage = images?.results?.[currentImageIndex];
+  const previousImage = images?.results?.[previousImageIndex];
 
   const changeBackground = (direction: 'next' | 'prev' | 'random' = 'next') => {
-    if (!images?.results?.length) return;
+    if (!images?.results?.length || isTransitioning) return;
 
-    setBackgroundTransition(true);
+    // 이전 이미지 인덱스 저장
+    setPreviousImageIndex(currentImageIndex);
+    setIsTransitioning(true);
     
+    // 새 이미지 인덱스 설정
+    let newIndex;
+    if (direction === 'random') {
+      newIndex = Math.floor(Math.random() * images.results.length);
+    } else if (direction === 'next') {
+      newIndex = (currentImageIndex + 1) % images.results.length;
+    } else {
+      newIndex = currentImageIndex > 0 ? currentImageIndex - 1 : images.results.length - 1;
+    }
+    
+    setCurrentImageIndex(newIndex);
+    
+    // 전환 애니메이션 완료 후 상태 정리
     setTimeout(() => {
-      if (direction === 'random') {
-        setCurrentImageIndex(Math.floor(Math.random() * images.results.length));
-      } else if (direction === 'next') {
-        setCurrentImageIndex(prev => (prev + 1) % images.results.length);
-      } else {
-        setCurrentImageIndex(prev => prev > 0 ? prev - 1 : images.results.length - 1);
-      }
-      setBackgroundTransition(false);
-    }, 150);
+      setIsTransitioning(false);
+    }, 800);
   };
 
   // 자동 배경 변경 (10분마다)
@@ -98,14 +108,31 @@ export function useUnsplashBackgrounds(condition: string | undefined, timeOfDay:
     return () => clearInterval(interval);
   }, [images]);
 
+  // 이미지 프리로딩
+  useEffect(() => {
+    if (!images?.results?.length) return;
+    
+    // 다음 몇 개 이미지를 미리 로드
+    const preloadImages = () => {
+      for (let i = 1; i <= 3; i++) {
+        const nextIndex = (currentImageIndex + i) % images.results.length;
+        const img = new Image();
+        img.src = images.results[nextIndex]?.urls?.regular || '';
+      }
+    };
+    
+    preloadImages();
+  }, [images, currentImageIndex]);
+
   return {
     currentImage,
+    previousImage,
     images: images?.results || [],
     totalImages: images?.results?.length || 0,
     currentIndex: currentImageIndex,
     isLoading,
     error,
     changeBackground,
-    backgroundTransition
+    isTransitioning
   };
 }

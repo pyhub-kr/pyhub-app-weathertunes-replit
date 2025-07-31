@@ -31,11 +31,12 @@ export function WeatherBackground({ weather, isLoading, showHelp, onHelpToggle }
   
   const {
     currentImage,
+    previousImage,
     totalImages,
     currentIndex,
     isLoading: imagesLoading,
     changeBackground,
-    backgroundTransition
+    isTransitioning
   } = useUnsplashBackgrounds(weather?.condition, timeOfDay);
 
   // Update time every minute
@@ -69,20 +70,34 @@ export function WeatherBackground({ weather, isLoading, showHelp, onHelpToggle }
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [changeBackground, onHelpToggle]);
 
-  const backgroundUrl = currentImage?.urls?.regular;
+  const currentBackgroundUrl = currentImage?.urls?.regular;
+  const previousBackgroundUrl = previousImage?.urls?.regular;
   const fallbackGradient = "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
 
   return (
     <div className="fixed inset-0 w-full h-full">
-      {/* 배경 이미지 */}
+      {/* 이전 배경 이미지 (전환 시에만 표시) */}
+      {isTransitioning && previousBackgroundUrl && (
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: `url(${previousBackgroundUrl})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            zIndex: 1
+          }}
+        />
+      )}
+      
+      {/* 현재 배경 이미지 */}
       <div 
-        className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-1000 ${
-          backgroundTransition ? 'opacity-0' : 'opacity-100'
-        }`}
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-1000 ease-in-out"
         style={{
-          backgroundImage: backgroundUrl ? `url(${backgroundUrl})` : fallbackGradient,
+          backgroundImage: currentBackgroundUrl ? `url(${currentBackgroundUrl})` : fallbackGradient,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
+          zIndex: 2,
+          opacity: isTransitioning ? 1 : 1
         }}
       />
       
