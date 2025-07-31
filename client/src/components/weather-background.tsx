@@ -12,6 +12,7 @@ export function WeatherBackground({ weather, isLoading }: WeatherBackgroundProps
   const [currentBackground, setCurrentBackground] = useState(() => getTimeWeatherBackground());
   const [currentTime, setCurrentTime] = useState(new Date());
   const [debugInfo, setDebugInfo] = useState<string[]>([]);
+  const [debugCollapsed, setDebugCollapsed] = useState(false);
 
   // Update time every minute
   useEffect(() => {
@@ -73,9 +74,9 @@ export function WeatherBackground({ weather, isLoading }: WeatherBackgroundProps
       {/* Subtle overlay for text readability */}
       <div className="absolute inset-0 bg-black bg-opacity-15" />
       
-      {/* Background change indicator - always visible for testing */}
+      {/* Background change indicator - 좌하단 */}
       <div className="absolute bottom-4 left-4 z-20 text-white text-opacity-80 text-xs font-medium bg-black bg-opacity-40 rounded-full px-3 py-1 backdrop-blur-sm transition-all duration-300">
-        배경 {backgroundIndex + 1}/{getBackgroundCount(weather?.condition as WeatherCondition)} (클릭하여 변경)
+        배경 {backgroundIndex + 1}/{getBackgroundCount(weather?.condition as WeatherCondition)}
       </div>
       
       {/* Time display overlay */}
@@ -83,12 +84,13 @@ export function WeatherBackground({ weather, isLoading }: WeatherBackgroundProps
         {timeDisplayName} • {currentTime.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
       </div>
       
-      {/* Debug test buttons */}
-      <div className="absolute top-4 left-4 z-20 flex flex-col gap-2">
+      {/* Debug test buttons - 좌상단 */}
+      <div className="absolute top-4 left-4 z-30 flex flex-col gap-2">
         <button 
           onMouseDown={(e) => {
             e.preventDefault();
             e.stopPropagation();
+            alert(`테스트! 현재 인덱스: ${backgroundIndex}`);
             const weatherCondition = weather?.condition as WeatherCondition;
             const maxBackgrounds = getBackgroundCount(weatherCondition);
             const nextIndex = (backgroundIndex + 1) % maxBackgrounds;
@@ -96,7 +98,7 @@ export function WeatherBackground({ weather, isLoading }: WeatherBackgroundProps
             setDebugInfo(prev => [logMessage, ...prev.slice(0, 4)]);
             setBackgroundIndex(nextIndex);
           }}
-          className="text-white text-xs font-bold bg-red-600 rounded px-4 py-2 hover:bg-red-700 transition-all duration-300 shadow-lg pointer-events-auto"
+          className="text-white text-xs font-bold bg-red-600 rounded px-4 py-2 hover:bg-red-700 transition-all duration-300 shadow-lg pointer-events-auto z-30"
         >
           배경 변경 ({backgroundIndex + 1}/{getBackgroundCount(weather?.condition as WeatherCondition)})
         </button>
@@ -104,6 +106,7 @@ export function WeatherBackground({ weather, isLoading }: WeatherBackgroundProps
           onMouseDown={(e) => {
             e.preventDefault();
             e.stopPropagation();
+            alert(`직접 변경! 인덱스: ${backgroundIndex}`);
             const weatherCondition = weather?.condition as WeatherCondition;
             const maxBackgrounds = getBackgroundCount(weatherCondition);
             const nextIndex = (backgroundIndex + 1) % maxBackgrounds;
@@ -111,34 +114,44 @@ export function WeatherBackground({ weather, isLoading }: WeatherBackgroundProps
             setDebugInfo(prev => [logMessage, ...prev.slice(0, 4)]);
             setBackgroundIndex(nextIndex);
           }}
-          className="text-white text-xs font-bold bg-blue-600 rounded px-4 py-2 hover:bg-blue-700 transition-all duration-300 shadow-lg pointer-events-auto"
+          className="text-white text-xs font-bold bg-blue-600 rounded px-4 py-2 hover:bg-blue-700 transition-all duration-300 shadow-lg pointer-events-auto z-30"
         >
           직접 변경
         </button>
-        <button 
-          onMouseDown={(e) => {
-            e.preventDefault();
-            const logMessage = `강제 테스트! ${new Date().getSeconds()}초`;
-            setDebugInfo(prev => [logMessage, ...prev.slice(0, 4)]);
-            setBackgroundIndex(prev => prev === 0 ? 1 : 0);
-          }}
-          className="text-white text-xs font-bold bg-green-600 rounded px-4 py-2 hover:bg-green-700 transition-all duration-300 shadow-lg pointer-events-auto"
-        >
-          강제 변경
-        </button>
       </div>
       
-      {/* 화면 디버깅 메시지 */}
-      <div className="absolute top-20 left-4 z-20 bg-black bg-opacity-80 text-white p-4 rounded max-w-xs">
-        <div className="text-xs font-bold mb-2">디버그 정보:</div>
-        <div className="text-xs">현재 인덱스: {backgroundIndex}</div>
-        <div className="text-xs">총 배경수: {getBackgroundCount(weather?.condition as WeatherCondition)}</div>
-        <div className="text-xs">날씨: {weather?.condition || 'default'}</div>
-        <div className="text-xs">시간대: {getTimeOfDay()}</div>
-        <div className="text-xs mt-2 font-bold">최근 로그:</div>
-        {debugInfo.map((log, idx) => (
-          <div key={idx} className="text-xs text-yellow-300">{log}</div>
-        ))}
+      {/* 우측 하단 접을 수 있는 디버그 로그 */}
+      <div className="absolute bottom-4 right-4 z-30">
+        <div 
+          onClick={() => setDebugCollapsed(!debugCollapsed)}
+          className="bg-black bg-opacity-80 text-white rounded-lg cursor-pointer transition-all duration-300 hover:bg-opacity-90"
+        >
+          {/* 헤더 (항상 보임) */}
+          <div className="px-4 py-2 flex items-center justify-between min-w-[200px]">
+            <span className="text-xs font-bold">디버그 로그</span>
+            <span className="text-xs">{debugCollapsed ? '▲' : '▼'}</span>
+          </div>
+          
+          {/* 콘텐츠 (접을 수 있음) */}
+          {!debugCollapsed && (
+            <div className="px-4 pb-4 border-t border-gray-600">
+              <div className="text-xs mt-2">현재 인덱스: {backgroundIndex}</div>
+              <div className="text-xs">총 배경수: {getBackgroundCount(weather?.condition as WeatherCondition)}</div>
+              <div className="text-xs">날씨: {weather?.condition || 'default'}</div>
+              <div className="text-xs">시간대: {getTimeOfDay()}</div>
+              <div className="text-xs mt-2 font-bold">최근 로그:</div>
+              <div className="max-h-32 overflow-y-auto">
+                {debugInfo.length === 0 ? (
+                  <div className="text-xs text-gray-400">아직 로그가 없습니다</div>
+                ) : (
+                  debugInfo.map((log, idx) => (
+                    <div key={idx} className="text-xs text-yellow-300">{log}</div>
+                  ))
+                )}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
       
       {/* Enhanced Weather and Time Effects */}
