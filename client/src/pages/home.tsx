@@ -371,9 +371,9 @@ export default function Home() {
         </>
       )}
 
-      {/* Last Updated Display - Center Bottom */}
+      {/* Last Updated Display - Bottom Center */}
       {weather?.lastUpdated && (
-        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-20">
+        <div className="fixed bottom-16 left-1/2 transform -translate-x-1/2 z-20">
           <div className="bg-black bg-opacity-60 backdrop-blur-md rounded-lg px-3 py-2 text-white text-xs border border-white border-opacity-20 text-shadow">
             마지막 업데이트: {new Date(weather.lastUpdated).toLocaleTimeString('ko-KR', {
               hour: '2-digit',

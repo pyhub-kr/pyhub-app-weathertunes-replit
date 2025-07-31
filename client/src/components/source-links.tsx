@@ -54,7 +54,7 @@ export function SourceLinks({ currentImage, currentTrack }: SourceLinksProps) {
       onMouseEnter={() => setShowLinks(true)}
       onMouseLeave={() => setShowLinks(false)}
     >
-      <div className="bg-black bg-opacity-60 backdrop-blur-md rounded-lg px-3 py-2 text-white text-xs border border-white border-opacity-20 min-w-48">
+      <div className="bg-black bg-opacity-60 backdrop-blur-md rounded-lg px-3 py-2 text-white text-xs border border-white border-opacity-20 min-w-48 space-y-1">
         {/* Photo Attribution */}
         {currentImage && (
           <button
@@ -72,11 +72,6 @@ export function SourceLinks({ currentImage, currentTrack }: SourceLinksProps) {
               <span className="truncate">Photo by {currentImage.user?.name}</span>
             </div>
           </button>
-        )}
-
-        {/* Separator */}
-        {currentImage && currentTrack && (
-          <div className="border-t border-white border-opacity-20 my-1"></div>
         )}
 
         {/* Music Attribution */}
