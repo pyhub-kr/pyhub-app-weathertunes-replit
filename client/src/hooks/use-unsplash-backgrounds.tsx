@@ -99,13 +99,13 @@ export function useUnsplashBackgrounds(condition: string | undefined, timeOfDay:
     }, 1000);
   };
 
-  // 자동 배경 변경 (10분마다)
+  // 자동 배경 변경 (1분마다)
   useEffect(() => {
     if (!images?.results?.length) return;
     
     const interval = setInterval(() => {
-      changeBackground('random');
-    }, 10 * 60 * 1000); // 10분
+      changeBackground('next');
+    }, 60 * 1000); // 1분
 
     return () => clearInterval(interval);
   }, [images]);
