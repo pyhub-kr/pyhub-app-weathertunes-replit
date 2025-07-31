@@ -96,30 +96,35 @@ export function WeatherBackground({ weather, isLoading }: WeatherBackgroundProps
         배경 {backgroundIndex + 1}/{getBackgroundCount(weather?.condition as WeatherCondition)}
       </div>
       
-      {/* 키보드 단축키 도움말 (H키로 토글) */}
+      {/* 키보드 단축키 도움말 (H키로 토글) - 화면 중앙 */}
       {showHelp && (
-        <div className="absolute top-6 left-6 z-30 bg-black bg-opacity-80 text-white text-sm rounded-lg p-4 backdrop-blur-sm transition-all duration-300 max-w-xs">
-          <div className="font-bold mb-2 text-center">키보드 단축키</div>
-          <div className="space-y-1">
-            <div className="flex justify-between">
-              <span className="text-gray-300">스페이스바 / →</span>
-              <span>다음 배경</span>
+        <div className="fixed inset-0 z-40 flex items-center justify-center">
+          <div className="bg-black bg-opacity-80 text-white text-lg rounded-xl p-6 backdrop-blur-md transition-all duration-300 max-w-md w-full mx-4 shadow-2xl">
+            <div className="font-bold mb-4 text-center text-xl">키보드 단축키</div>
+            <div className="space-y-3">
+              <div className="flex justify-between items-center">
+                <span className="text-gray-300 font-mono">스페이스바 / →</span>
+                <span>다음 배경</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-300 font-mono">←</span>
+                <span>이전 배경</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-300 font-mono">B</span>
+                <span>배경 변경</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-300 font-mono">H</span>
+                <span>도움말 토글</span>
+              </div>
             </div>
-            <div className="flex justify-between">
-              <span className="text-gray-300">←</span>
-              <span>이전 배경</span>
+            <div className="mt-4 pt-3 border-t border-gray-600 text-center text-yellow-300">
+              현재 배경: {backgroundIndex + 1}/{getBackgroundCount(weather?.condition as WeatherCondition)}
             </div>
-            <div className="flex justify-between">
-              <span className="text-gray-300">B</span>
-              <span>배경 변경</span>
+            <div className="mt-4 text-center text-gray-400 text-sm">
+              H키를 다시 누르면 닫힙니다
             </div>
-            <div className="flex justify-between">
-              <span className="text-gray-300">H</span>
-              <span>도움말 토글</span>
-            </div>
-          </div>
-          <div className="mt-3 pt-2 border-t border-gray-600 text-center text-yellow-300 text-xs">
-            현재: {backgroundIndex + 1}/{getBackgroundCount(weather?.condition as WeatherCondition)}
           </div>
         </div>
       )}

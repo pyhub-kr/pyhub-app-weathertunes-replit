@@ -62,7 +62,10 @@ export function useYouTubePlayer() {
           if (state === window.YT.PlayerState.PLAYING) {
             setIsPlaying(true);
             playStartRef.current = Date.now();
-            startTimeTracking();
+            // Use setTimeout to ensure state is updated before starting tracking
+            setTimeout(() => {
+              startTimeTracking();
+            }, 100);
             
             // Update media session for background control
             if ('mediaSession' in navigator) {
@@ -89,8 +92,13 @@ export function useYouTubePlayer() {
   const startTimeTracking = useCallback(() => {
     if (intervalRef.current) return;
     
+    // Ensure playStartRef is set
+    if (playStartRef.current === 0) {
+      playStartRef.current = Date.now();
+    }
+    
     intervalRef.current = setInterval(() => {
-      if (isPlaying && playStartRef.current > 0) {
+      if (playStartRef.current > 0) {
         // Calculate elapsed time since play started
         const elapsedSeconds = (Date.now() - playStartRef.current) / 1000;
         const totalTime = startTimeRef.current + elapsedSeconds;
