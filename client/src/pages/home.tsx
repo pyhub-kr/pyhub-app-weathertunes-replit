@@ -208,9 +208,7 @@ export default function Home() {
         <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 flex items-center justify-center">
           <div className="bg-black bg-opacity-40 backdrop-blur-md rounded-2xl p-8 text-center border border-white border-opacity-20">
             <div className="animate-spin w-8 h-8 border-2 border-white border-t-transparent rounded-full mx-auto mb-4"></div>
-            <div className="text-white text-lg" style={{
-              textShadow: '0 2px 8px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.6)'
-            }}>
+            <div className="text-white text-lg text-shadow">
               {isRefreshing ? "위치 정보를 새로고침 중..." : "날씨 정보를 가져오는 중..."}
             </div>
           </div>
@@ -222,19 +220,13 @@ export default function Home() {
         <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 flex items-center justify-center">
           <div className="bg-black bg-opacity-40 backdrop-blur-md rounded-2xl p-8 text-center max-w-md mx-4 border border-white border-opacity-20">
             <div className="text-red-400 text-4xl mb-4">⚠️</div>
-            <div className="text-white text-lg mb-4" style={{
-              textShadow: '0 2px 8px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.6)'
-            }}>오류가 발생했습니다</div>
-            <div className="text-white text-opacity-80 text-sm mb-6" style={{
-              textShadow: '0 2px 8px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.6)'
-            }}>
+            <div className="text-white text-lg mb-4 text-shadow">오류가 발생했습니다</div>
+            <div className="text-white text-opacity-80 text-sm mb-6 text-shadow">
               {locationError || weatherError}
             </div>
             <button 
               onClick={() => window.location.reload()}
-              className="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-6 py-2 rounded-full transition-all duration-200" style={{
-                textShadow: '0 2px 8px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.6)'
-              }}
+              className="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-6 py-2 rounded-full transition-all duration-200 text-shadow"
             >
               다시 시도
             </button>
@@ -244,9 +236,7 @@ export default function Home() {
 
       {/* Auto-play Notice */}
       {!hasUserInteracted && currentTrack && (
-        <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-40 bg-black bg-opacity-80 backdrop-blur-md rounded-full px-4 py-2 text-white text-sm animate-pulse border border-white border-opacity-20" style={{
-          textShadow: '0 2px 8px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.6)'
-        }}>
+        <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-40 bg-black bg-opacity-80 backdrop-blur-md rounded-full px-4 py-2 text-white text-sm animate-pulse border border-white border-opacity-20 text-shadow">
           화면을 터치하면 음악이 자동 재생됩니다 🎵
         </div>
       )}
@@ -257,9 +247,7 @@ export default function Home() {
           {/* Header */}
           <header className="flex justify-between items-center p-3 sm:p-4 lg:p-6 flex-shrink-0">
             <div className="flex items-center">
-              <h1 className="text-white text-lg sm:text-xl lg:text-2xl font-semibold" style={{
-                textShadow: '0 2px 8px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.6)'
-              }}>WeatherTunes</h1>
+              <h1 className="text-white text-lg sm:text-xl lg:text-2xl font-semibold text-shadow">WeatherTunes</h1>
             </div>
             
             {/* User Count Display */}
@@ -267,9 +255,7 @@ export default function Home() {
               {isConnected && userCount.totalUsers > 0 && (
                 <div className="flex items-center space-x-1 bg-black bg-opacity-30 backdrop-blur-md rounded-full px-2 sm:px-3 py-1 sm:py-1.5 border border-white border-opacity-10">
                   <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                  <span className="text-white text-xs sm:text-sm font-medium" style={{
-                    textShadow: '0 2px 8px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.6)'
-                  }}>
+                  <span className="text-white text-xs sm:text-sm font-medium text-shadow">
                     {userCount.totalUsers}명 접속
                   </span>
                 </div>
@@ -280,14 +266,10 @@ export default function Home() {
                 <svg className="w-3 h-3 sm:w-4 sm:h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
                 </svg>
-                <span className="text-white text-xs sm:text-sm font-medium" style={{
-                  textShadow: '0 2px 8px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.6)'
-                }}>
+                <span className="text-white text-xs sm:text-sm font-medium text-shadow">
                   {location.city || "위치 정보"}
                   {isUsingDefault && (
-                    <span className="text-white text-opacity-70 text-xs ml-1 hidden sm:inline" style={{
-                      textShadow: '0 2px 8px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.6)'
-                    }}>(기본위치)</span>
+                    <span className="text-white text-opacity-70 text-xs ml-1 hidden sm:inline text-shadow">(기본위치)</span>
                   )}
                 </span>
                 <button
@@ -327,19 +309,8 @@ export default function Home() {
             </div>
           </main>
 
-          {/* Footer */}
-          <footer className="p-2 sm:p-3 text-center flex-shrink-0">
-            <div className="text-white text-opacity-60 text-xs" style={{
-              textShadow: '0 2px 8px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.6)'
-            }}>
-              마지막 업데이트: {weather?.lastUpdated ? 
-                new Date(weather.lastUpdated).toLocaleTimeString('ko-KR', {
-                  hour: '2-digit',
-                  minute: '2-digit'
-                }) : '정보 없음'
-              }
-            </div>
-          </footer>
+          {/* Footer - Spacer */}
+          <footer className="p-2 sm:p-3 flex-shrink-0"></footer>
         </div>
       )}
 
@@ -398,6 +369,18 @@ export default function Home() {
             </div>
           </div>
         </>
+      )}
+
+      {/* Last Updated Display - Center Bottom */}
+      {weather?.lastUpdated && (
+        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-20">
+          <div className="bg-black bg-opacity-60 backdrop-blur-md rounded-lg px-3 py-2 text-white text-xs border border-white border-opacity-20 text-shadow">
+            마지막 업데이트: {new Date(weather.lastUpdated).toLocaleTimeString('ko-KR', {
+              hour: '2-digit',
+              minute: '2-digit'
+            })}
+          </div>
+        </div>
       )}
 
       {/* Source Links */}

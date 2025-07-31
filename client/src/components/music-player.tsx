@@ -24,21 +24,15 @@ export function MusicPlayer({
     <div className="bg-black bg-opacity-30 backdrop-blur-md rounded-3xl p-3 sm:p-4 shadow-2xl animate-slide-up hover:bg-opacity-40 transition-all duration-300 hover:scale-105 border border-white border-opacity-10">
       {/* Currently Playing Info */}
       <div className="text-center mb-3 sm:mb-4">
-        <div className="text-white text-xs mb-1" style={{
-          textShadow: '0 2px 8px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.6)'
-        }}>
+        <div className="text-white text-xs mb-1 text-shadow">
           {isPlaying ? (
             <span className="animate-pulse">현재 재생 중</span>
           ) : (
             <span>일시정지</span>
           )}
         </div>
-        <div className="text-white text-sm sm:text-base font-medium mb-1 truncate transition-all duration-300" style={{
-          textShadow: '0 2px 8px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.6)'
-        }}>{track.title}</div>
-        <div className="text-white text-xs sm:text-sm transition-colors duration-300" style={{
-          textShadow: '0 2px 8px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.6)'
-        }}>{track.mood}</div>
+        <div className="text-white text-sm sm:text-base font-medium mb-1 truncate transition-all duration-300 text-shadow">{track.title}</div>
+        <div className="text-white text-xs sm:text-sm transition-colors duration-300 text-shadow">{track.mood}</div>
       </div>
       
       {/* Music Controls */}

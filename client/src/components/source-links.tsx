@@ -54,14 +54,14 @@ export function SourceLinks({ currentImage, currentTrack }: SourceLinksProps) {
       onMouseEnter={() => setShowLinks(true)}
       onMouseLeave={() => setShowLinks(false)}
     >
-      <div className="space-y-2">
+      <div className="bg-black bg-opacity-60 backdrop-blur-md rounded-lg px-3 py-2 text-white text-xs border border-white border-opacity-20 min-w-48">
         {/* Photo Attribution */}
         {currentImage && (
           <button
             onClick={handlePhotoClick}
-            className="block w-full bg-black bg-opacity-50 backdrop-blur-md rounded-lg px-3 py-2 text-white text-xs hover:bg-opacity-70 transition-all duration-200 border border-white border-opacity-20"
+            className="block w-full text-left hover:bg-white hover:bg-opacity-10 rounded px-2 py-1 transition-all duration-200"
             style={{
-              textShadow: '0 2px 8px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.6)'
+              textShadow: '0 1px 3px rgba(0,0,0,0.7)'
             }}
             title="Unsplash에서 보기"
           >
@@ -74,13 +74,18 @@ export function SourceLinks({ currentImage, currentTrack }: SourceLinksProps) {
           </button>
         )}
 
+        {/* Separator */}
+        {currentImage && currentTrack && (
+          <div className="border-t border-white border-opacity-20 my-1"></div>
+        )}
+
         {/* Music Attribution */}
         {currentTrack && (
           <button
             onClick={handleMusicClick}
-            className="block w-full bg-black bg-opacity-50 backdrop-blur-md rounded-lg px-3 py-2 text-white text-xs hover:bg-opacity-70 transition-all duration-200 border border-white border-opacity-20"
+            className="block w-full text-left hover:bg-white hover:bg-opacity-10 rounded px-2 py-1 transition-all duration-200"
             style={{
-              textShadow: '0 2px 8px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.6)'
+              textShadow: '0 1px 3px rgba(0,0,0,0.7)'
             }}
             title="YouTube에서 보기"
           >
