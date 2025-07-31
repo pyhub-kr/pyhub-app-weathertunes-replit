@@ -4,7 +4,7 @@ import { weatherDataSchema, locationSchema } from "@shared/schema";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Weather API proxy to avoid CORS issues
+  // Weather API proxy using Open-Meteo (free, no API key required)
   app.get("/api/weather", async (req, res) => {
     try {
       const query = z.object({
@@ -12,10 +12,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         lon: z.string(),
       }).parse(req.query);
 
-      const apiKey = process.env.OPENWEATHER_API_KEY || process.env.VITE_OPENWEATHER_API_KEY || "demo_key";
-      
+      // Open-Meteo API call - no API key required
       const response = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?lat=${query.lat}&lon=${query.lon}&appid=${apiKey}&units=metric`
+        `https://api.open-meteo.com/v1/forecast?latitude=${query.lat}&longitude=${query.lon}&current_weather=true&hourly=temperature_2m,relative_humidity_2m,visibility,wind_speed_10m&timezone=auto`
       );
 
       if (!response.ok) {
@@ -24,16 +23,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const data = await response.json();
       
-      // Transform OpenWeatherMap data to our schema
+      // Transform Open-Meteo data to our schema
+      const current = data.current_weather;
+      const hourly = data.hourly;
+      
       const weatherData = {
-        temperature: Math.round(data.main.temp),
-        description: data.weather[0].description,
-        condition: mapWeatherCondition(data.weather[0].main.toLowerCase()),
-        humidity: data.main.humidity,
-        windSpeed: Math.round(data.wind.speed * 3.6), // Convert m/s to km/h
-        visibility: Math.round(data.visibility / 1000), // Convert m to km
-        city: data.name,
-        country: data.sys.country,
+        temperature: Math.round(current.temperature),
+        description: getWeatherDescription(current.weathercode),
+        condition: mapWeatherCodeToCondition(current.weathercode),
+        humidity: hourly.relative_humidity_2m ? Math.round(hourly.relative_humidity_2m[0]) : 50,
+        windSpeed: Math.round(current.windspeed), // Open-Meteo already in km/h
+        visibility: hourly.visibility ? Math.round(hourly.visibility[0] / 1000) : 10, // Convert m to km
+        city: "현재 위치", // Open-Meteo doesn't provide city names
+        country: "KR",
         lastUpdated: new Date().toISOString(),
       };
 
@@ -92,22 +94,51 @@ export async function registerRoutes(app: Express): Promise<Server> {
   return httpServer;
 }
 
-// Helper function to map OpenWeatherMap conditions to our simplified conditions
-function mapWeatherCondition(condition: string): string {
-  const conditionMap: Record<string, string> = {
-    'clear': 'clear',
-    'clouds': 'clouds',
-    'rain': 'rain',
-    'drizzle': 'rain',
-    'thunderstorm': 'rain',
-    'snow': 'snow',
-    'mist': 'fog',
-    'fog': 'fog',
-    'haze': 'fog',
-    'dust': 'fog',
-    'sand': 'fog',
-    'smoke': 'fog',
-  };
+// Helper function to map Open-Meteo weather codes to our simplified conditions
+function mapWeatherCodeToCondition(weatherCode: number): string {
+  // Open-Meteo weather codes: https://open-meteo.com/en/docs
+  if (weatherCode === 0) return 'clear'; // Clear sky
+  if (weatherCode >= 1 && weatherCode <= 3) return 'clouds'; // Mainly clear, partly cloudy, overcast
+  if (weatherCode >= 45 && weatherCode <= 48) return 'fog'; // Fog
+  if (weatherCode >= 51 && weatherCode <= 67) return 'rain'; // Drizzle and rain
+  if (weatherCode >= 71 && weatherCode <= 77) return 'snow'; // Snow
+  if (weatherCode >= 80 && weatherCode <= 99) return 'rain'; // Rain showers and thunderstorms
+  
+  return 'clear'; // Default fallback
+}
 
-  return conditionMap[condition] || 'clear';
+// Helper function to get weather description from Open-Meteo weather codes
+function getWeatherDescription(weatherCode: number): string {
+  const descriptions: Record<number, string> = {
+    0: '맑음',
+    1: '대체로 맑음',
+    2: '부분 흐림',
+    3: '흐림',
+    45: '안개',
+    48: '서리 안개',
+    51: '가벼운 이슬비',
+    53: '보통 이슬비',
+    55: '강한 이슬비',
+    56: '가벼운 얼음 이슬비',
+    57: '강한 얼음 이슬비',
+    61: '가벼운 비',
+    63: '보통 비',
+    65: '강한 비',
+    66: '가벼운 얼음비',
+    67: '강한 얼음비',
+    71: '가벼운 눈',
+    73: '보통 눈',
+    75: '강한 눈',
+    77: '진눈깨비',
+    80: '가벼운 소나기',
+    81: '보통 소나기',
+    82: '강한 소나기',
+    85: '가벼운 눈 소나기',
+    86: '강한 눈 소나기',
+    95: '뇌우',
+    96: '우박을 동반한 뇌우',
+    99: '강한 우박을 동반한 뇌우',
+  };
+  
+  return descriptions[weatherCode] || '알 수 없음';
 }

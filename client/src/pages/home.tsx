@@ -14,7 +14,7 @@ export default function Home() {
   const [playlist, setPlaylist] = useState<MusicTrack[]>([]);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   
-  const { location, isLoading: locationLoading, error: locationError } = useGeolocation();
+  const { location, isLoading: locationLoading, error: locationError, isUsingDefault } = useGeolocation();
   const { weather, isLoading: weatherLoading, error: weatherError } = useWeather(location);
   
   const {
@@ -140,6 +140,9 @@ export default function Home() {
                 </svg>
                 <span className="text-white text-sm font-medium">
                   {location.city || "위치 정보"}
+                  {isUsingDefault && (
+                    <span className="text-white text-opacity-70 text-xs ml-1">(기본위치)</span>
+                  )}
                 </span>
               </div>
             )}
