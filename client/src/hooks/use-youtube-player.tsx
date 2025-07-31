@@ -78,10 +78,15 @@ export function useYouTubePlayer() {
     
     intervalRef.current = setInterval(() => {
       if (playerRef.current && playerRef.current.getCurrentTime) {
-        setCurrentTime(playerRef.current.getCurrentTime());
-        if (playerRef.current.getDuration) {
-          setDuration(playerRef.current.getDuration());
-        }
+        const currentTime = playerRef.current.getCurrentTime();
+        const duration = playerRef.current.getDuration ? playerRef.current.getDuration() : 0;
+        
+        // Validate and limit time values (max 24 hours = 86400 seconds)
+        const validCurrentTime = (currentTime && currentTime > 0 && currentTime <= 86400) ? currentTime : 0;
+        const validDuration = (duration && duration > 0 && duration <= 86400) ? duration : 0;
+        
+        setCurrentTime(validCurrentTime);
+        setDuration(validDuration);
       }
     }, 1000);
   }, []);

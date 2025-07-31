@@ -28,8 +28,21 @@ export function MusicPlayer({
   onRefresh,
 }: MusicPlayerProps) {
   const formatTime = (seconds: number) => {
+    // Handle invalid or extremely large values
+    if (!seconds || seconds < 0 || seconds > 86400) { // 24 hours max
+      return "0:00";
+    }
+    
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
+    
+    // Format as HH:MM:SS if over 60 minutes, otherwise MM:SS
+    if (mins >= 60) {
+      const hours = Math.floor(mins / 60);
+      const remainingMins = mins % 60;
+      return `${hours}:${remainingMins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+    
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
