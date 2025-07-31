@@ -49,28 +49,29 @@ export function MusicPlayer({
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
 
   return (
-    <div className="bg-white bg-opacity-10 backdrop-blur-md rounded-3xl p-4 shadow-2xl animate-slide-up">
+    <div className="bg-white bg-opacity-10 backdrop-blur-md rounded-3xl p-4 shadow-2xl animate-slide-up hover:bg-opacity-15 transition-all duration-300 hover:scale-105">
       {/* Currently Playing Info */}
       <div className="text-center mb-4">
-        <div className="text-white text-opacity-70 text-xs mb-1">현재 재생 중</div>
-        <div className="text-white text-base font-medium mb-1 truncate">{track.title}</div>
-        <div className="text-white text-opacity-80 text-sm">{track.mood}</div>
+        <div className="text-white text-opacity-70 text-xs mb-1 animate-pulse">현재 재생 중</div>
+        <div className="text-white text-base font-medium mb-1 truncate transition-all duration-300">{track.title}</div>
+        <div className="text-white text-opacity-80 text-sm transition-colors duration-300">{track.mood}</div>
       </div>
       
       {/* Music Controls */}
       <div className="flex items-center justify-center space-x-4 mb-4">
         <button 
           onClick={onPrevious}
-          className="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-opacity-30 transition-all duration-200"
+          className="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-opacity-30 transition-all duration-200 hover:scale-110 active:scale-95"
         >
-          <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+          <svg className="w-5 h-5 text-white transition-transform duration-200" fill="currentColor" viewBox="0 0 20 20">
             <path d="M8.445 14.832A1 1 0 0010 14v-2.798l5.445 3.63A1 1 0 0017 14V6a1 1 0 00-1.555-.832L10 8.798V6a1 1 0 00-1.555-.832l-6 4a1 1 0 000 1.664l6 4z" />
           </svg>
         </button>
         
         <button 
           onClick={onPlayPause}
-          className="w-16 h-16 bg-white bg-opacity-30 rounded-full flex items-center justify-center hover:bg-opacity-40 transition-all duration-200"
+          className="w-16 h-16 bg-white bg-opacity-30 rounded-full flex items-center justify-center hover:bg-opacity-40 transition-all duration-200 hover:scale-110 active:scale-95"
+          style={isPlaying ? { animation: 'pulse 2s infinite' } : {}}
         >
           {isPlaying ? (
             <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
@@ -85,9 +86,9 @@ export function MusicPlayer({
         
         <button 
           onClick={onNext}
-          className="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-opacity-30 transition-all duration-200"
+          className="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-opacity-30 transition-all duration-200 hover:scale-110 active:scale-95"
         >
-          <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+          <svg className="w-5 h-5 text-white transition-transform duration-200" fill="currentColor" viewBox="0 0 20 20">
             <path d="M4.555 5.168A1 1 0 003 6v8a1 1 0 001.555.832L10 11.202V14a1 1 0 001.555.832l6-4a1 1 0 000-1.664l-6-4A1 1 0 0010 6v2.798l-5.445-3.63z" />
           </svg>
         </button>
@@ -109,9 +110,11 @@ export function MusicPlayer({
           }}
         >
           <div 
-            className="bg-white h-1 rounded-full transition-all duration-300" 
+            className="bg-white h-1 rounded-full transition-all duration-300 relative overflow-hidden" 
             style={{ width: `${progress}%` }}
-          />
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-50 animate-shimmer" />
+          </div>
         </div>
       </div>
       
@@ -143,10 +146,10 @@ export function MusicPlayer({
       <div className="flex justify-center space-x-4">
         <button 
           onClick={onRefresh}
-          className="text-white text-opacity-70 hover:text-opacity-100 transition-opacity"
+          className="text-white text-opacity-70 hover:text-opacity-100 transition-all duration-200 hover:scale-110 active:scale-95 hover:rotate-180"
           title="새로운 음악 찾기"
         >
-          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+          <svg className="w-5 h-5 transition-transform duration-500" fill="currentColor" viewBox="0 0 20 20">
             <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd" />
           </svg>
         </button>

@@ -19,15 +19,15 @@ export function WeatherCard({ weather }: WeatherCardProps) {
   const timeDisplayName = getTimeDisplayName(timeOfDay);
 
   return (
-    <div className="bg-white bg-opacity-10 backdrop-blur-md rounded-3xl p-8 shadow-2xl animate-slide-up">
+    <div className="bg-white bg-opacity-10 backdrop-blur-md rounded-3xl p-8 shadow-2xl animate-slide-up hover:bg-opacity-15 transition-all duration-300 hover:scale-105 hover:shadow-3xl">
       <div className="text-center mb-6">
         {/* Time of Day */}
-        <div className="text-sm text-white text-opacity-60 mb-2 uppercase tracking-wider">
+        <div className="text-sm text-white text-opacity-60 mb-2 uppercase tracking-wider animate-pulse">
           {timeDisplayName}
         </div>
         
         {/* Weather Icon */}
-        <div className="w-24 h-24 mx-auto mb-4 animate-float text-6xl flex items-center justify-center">
+        <div className="w-24 h-24 mx-auto mb-4 text-6xl flex items-center justify-center transition-transform duration-300 hover:scale-110" style={{ animation: 'float 3s ease-in-out infinite' }}>
           {icon}
         </div>
         

@@ -32,37 +32,62 @@ export function WeatherBackground({ weather, isLoading }: WeatherBackgroundProps
 
   return (
     <div className="fixed inset-0 w-full h-full transition-all duration-1000 ease-in-out">
-      {/* Gradient Background */}
+      {/* Animated Gradient Background */}
       <div 
-        className="absolute inset-0 transition-all duration-1000 ease-in-out"
+        className="absolute inset-0 animated-background transition-all duration-1000 ease-in-out"
         style={{ background: currentBackground }}
       />
       
+      {/* Floating Particles */}
+      <div className="floating-particles" />
+      
+      {/* Shimmer Overlay */}
+      <div className="shimmer-overlay" />
+      
       {/* Subtle overlay for text readability */}
-      <div className="absolute inset-0 bg-black bg-opacity-20" />
+      <div className="absolute inset-0 bg-black bg-opacity-15" />
       
       {/* Time display overlay */}
-      <div className="absolute top-4 right-4 z-20 text-white text-opacity-70 text-xs font-medium bg-black bg-opacity-20 rounded-full px-3 py-1 backdrop-blur-sm">
+      <div className="absolute top-4 right-4 z-20 text-white text-opacity-80 text-xs font-medium bg-black bg-opacity-25 rounded-full px-3 py-1 backdrop-blur-sm transition-all duration-300 hover:bg-opacity-40">
         {timeDisplayName} • {currentTime.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
       </div>
       
-      {/* Weather Effects */}
-      <div className="absolute inset-0 pointer-events-none">
+      {/* Enhanced Weather Effects */}
+      <div className="absolute inset-0 pointer-events-none z-10">
         {weather?.condition === 'rain' && (
-          <div className="absolute inset-0 opacity-30">
-            <div className="rain-effect"></div>
-          </div>
+          <>
+            <div className="absolute inset-0 opacity-40">
+              <div className="rain-effect"></div>
+            </div>
+            <div className="absolute inset-0 opacity-20" style={{ animationDelay: '0.3s' }}>
+              <div className="rain-effect"></div>
+            </div>
+            <div className="absolute inset-0 opacity-15" style={{ animationDelay: '0.6s' }}>
+              <div className="rain-effect"></div>
+            </div>
+          </>
         )}
         
         {weather?.condition === 'snow' && (
-          <div className="absolute inset-0 opacity-40">
-            <div className="snow-effect"></div>
-          </div>
+          <>
+            <div className="absolute inset-0 opacity-50">
+              <div className="snow-effect"></div>
+            </div>
+            <div className="absolute inset-0 opacity-30" style={{ animationDelay: '2s' }}>
+              <div className="snow-effect"></div>
+            </div>
+          </>
         )}
         
         {weather?.condition === 'thunderstorm' && (
-          <div className="absolute inset-0 opacity-20">
+          <div className="absolute inset-0 opacity-25">
             <div className="lightning-effect"></div>
+          </div>
+        )}
+        
+        {weather?.condition === 'fog' && (
+          <div className="absolute inset-0 opacity-60">
+            <div className="fog-effect"></div>
           </div>
         )}
       </div>
