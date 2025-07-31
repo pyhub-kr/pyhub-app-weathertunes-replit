@@ -98,8 +98,8 @@ export function WeatherBackground({ weather, isLoading }: WeatherBackgroundProps
       
       {/* 키보드 단축키 도움말 (H키로 토글) - 화면 중앙 */}
       {showHelp && (
-        <div className="fixed inset-0 z-40 flex items-center justify-center">
-          <div className="bg-black bg-opacity-80 text-white text-lg rounded-xl p-6 backdrop-blur-md transition-all duration-300 max-w-md w-full mx-4 shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="bg-black bg-opacity-90 text-white text-lg rounded-xl p-6 backdrop-blur-md transition-all duration-300 max-w-md w-full mx-4 shadow-2xl border border-white border-opacity-20">
             <div className="font-bold mb-4 text-center text-xl">키보드 단축키</div>
             <div className="space-y-3">
               <div className="flex justify-between items-center">
@@ -129,9 +129,9 @@ export function WeatherBackground({ weather, isLoading }: WeatherBackgroundProps
         </div>
       )}
       
-      {/* Help hint - H키 안내 */}
+      {/* Help hint - H키 안내 (우하단, 음악 플레이어 위) */}
       {!showHelp && (
-        <div className="absolute top-6 left-6 z-20 text-white text-opacity-60 text-xs bg-black bg-opacity-30 rounded px-2 py-1 backdrop-blur-sm transition-all duration-300">
+        <div className="absolute bottom-20 right-6 z-20 text-white text-opacity-60 text-xs bg-black bg-opacity-30 rounded px-2 py-1 backdrop-blur-sm transition-all duration-300">
           H키: 도움말
         </div>
       )}
