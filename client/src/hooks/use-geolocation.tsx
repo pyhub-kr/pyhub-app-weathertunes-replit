@@ -18,7 +18,7 @@ export function useGeolocation() {
       console.log("Geolocation not supported, using default Daejeon location");
       setCoordinates(DEFAULT_DAEJEON_COORDINATES);
       setIsUsingDefault(true);
-      setLocationError("위치 서비스를 지원하지 않아 대전으로 설정되었습니다.");
+      setLocationError(null); // Clear error since we're using default location
       return;
     }
 
@@ -26,7 +26,7 @@ export function useGeolocation() {
       console.log("Location request timeout, using default Daejeon location");
       setCoordinates(DEFAULT_DAEJEON_COORDINATES);
       setIsUsingDefault(true);
-      setLocationError("위치 정보 요청 시간이 초과되어 대전으로 설정되었습니다.");
+      setLocationError(null); // Clear error since we're using default location
     }, 8000); // 8초 후 타임아웃
 
     navigator.geolocation.getCurrentPosition(
@@ -60,7 +60,7 @@ export function useGeolocation() {
         }
         setCoordinates(DEFAULT_DAEJEON_COORDINATES);
         setIsUsingDefault(true);
-        setLocationError(errorMessage);
+        setLocationError(null); // Clear error since we're using default location
       },
       {
         enableHighAccuracy: true,

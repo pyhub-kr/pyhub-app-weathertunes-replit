@@ -82,12 +82,13 @@ export default function Home() {
   };
 
   const isLoading = locationLoading || weatherLoading;
-  const hasError = locationError || weatherError;
+  // Only show error if we have a real error AND we're not using default location successfully
+  const hasError = (locationError && !isUsingDefault) || weatherError;
 
   return (
     <div className="relative min-h-screen overflow-hidden">
       {/* Background */}
-      <WeatherBackground weather={weather} isLoading={isLoading} />
+      <WeatherBackground weather={weather || null} isLoading={isLoading} />
       
       {/* Loading Overlay */}
       {isLoading && (
