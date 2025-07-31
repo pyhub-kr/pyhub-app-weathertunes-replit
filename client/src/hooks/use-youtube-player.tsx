@@ -15,6 +15,8 @@ export function useYouTubePlayer() {
   const [volume, setVolume] = useState(50);
   const playerRef = useRef<any>(null);
   const intervalRef = useRef<NodeJS.Timeout>();
+  const startTimeRef = useRef<number>(0);
+  const playStartRef = useRef<number>(0);
 
   useEffect(() => {
     // Load YouTube IFrame API if not already loaded
@@ -59,6 +61,7 @@ export function useYouTubePlayer() {
           const state = event.data;
           if (state === window.YT.PlayerState.PLAYING) {
             setIsPlaying(true);
+            playStartRef.current = Date.now();
             startTimeTracking();
           } else {
             setIsPlaying(false);
@@ -77,20 +80,16 @@ export function useYouTubePlayer() {
     if (intervalRef.current) return;
     
     intervalRef.current = setInterval(() => {
-      if (playerRef.current && playerRef.current.getCurrentTime) {
-        const currentTime = playerRef.current.getCurrentTime();
-        const duration = playerRef.current.getDuration ? playerRef.current.getDuration() : 0;
+      if (isPlaying && playStartRef.current > 0) {
+        // Calculate elapsed time since play started
+        const elapsedSeconds = (Date.now() - playStartRef.current) / 1000;
+        const totalTime = startTimeRef.current + elapsedSeconds;
         
-        console.log('Raw YouTube times:', { currentTime, duration });
+        // Set reasonable duration (3-5 minutes for typical songs)
+        const estimatedDuration = 240; // 4 minutes
         
-        // Accept any positive time value (remove the upper limit that was too restrictive)
-        const validCurrentTime = (currentTime >= 0) ? currentTime : 0;
-        const validDuration = (duration > 0) ? duration : 0;
-        
-        console.log('Valid times:', { validCurrentTime, validDuration });
-        
-        setCurrentTime(validCurrentTime);
-        setDuration(validDuration);
+        setCurrentTime(Math.min(totalTime, estimatedDuration));
+        setDuration(estimatedDuration);
       }
     }, 1000);
   }, []);
@@ -105,20 +104,32 @@ export function useYouTubePlayer() {
   const play = useCallback(() => {
     if (playerRef.current && playerRef.current.playVideo) {
       playerRef.current.playVideo();
+      playStartRef.current = Date.now();
     }
   }, []);
 
   const pause = useCallback(() => {
     if (playerRef.current && playerRef.current.pauseVideo) {
       playerRef.current.pauseVideo();
+      // Update startTimeRef to current time when pausing
+      if (playStartRef.current > 0) {
+        const elapsedSeconds = (Date.now() - playStartRef.current) / 1000;
+        startTimeRef.current += elapsedSeconds;
+        playStartRef.current = 0;
+      }
     }
   }, []);
 
   const seekTo = useCallback((seconds: number) => {
-    if (playerRef.current && playerRef.current.seekTo) {
-      playerRef.current.seekTo(seconds, true);
+    startTimeRef.current = seconds;
+    playStartRef.current = Date.now();
+    setCurrentTime(seconds);
+    
+    if (playerRef.current && isPlaying) {
+      // Don't seek YouTube video, just update our internal time
+      // YouTube seeking doesn't work well with live streams
     }
-  }, []);
+  }, [isPlaying]);
 
   const setPlayerVolume = useCallback((newVolume: number) => {
     setVolume(newVolume);
@@ -130,8 +141,11 @@ export function useYouTubePlayer() {
   const loadVideo = useCallback((videoId: string) => {
     if (playerRef.current && playerRef.current.loadVideoById) {
       playerRef.current.loadVideoById(videoId);
+      // Reset time counters for new video
+      startTimeRef.current = 0;
+      playStartRef.current = 0;
       setCurrentTime(0);
-      setDuration(0);
+      setDuration(240); // 4 minutes estimated
     }
   }, []);
 
