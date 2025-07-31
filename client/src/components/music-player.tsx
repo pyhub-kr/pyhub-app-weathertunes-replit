@@ -22,7 +22,13 @@ export function MusicPlayer({
     <div className="bg-white bg-opacity-10 backdrop-blur-md rounded-3xl p-3 sm:p-4 shadow-2xl animate-slide-up hover:bg-opacity-15 transition-all duration-300 hover:scale-105">
       {/* Currently Playing Info */}
       <div className="text-center mb-3 sm:mb-4">
-        <div className="text-white text-opacity-70 text-xs mb-1 animate-pulse">현재 재생 중</div>
+        <div className="text-white text-opacity-70 text-xs mb-1">
+          {isPlaying ? (
+            <span className="animate-pulse">현재 재생 중</span>
+          ) : (
+            <span>일시정지</span>
+          )}
+        </div>
         <div className="text-white text-sm sm:text-base font-medium mb-1 truncate transition-all duration-300">{track.title}</div>
         <div className="text-white text-opacity-80 text-xs sm:text-sm transition-colors duration-300">{track.mood}</div>
       </div>
