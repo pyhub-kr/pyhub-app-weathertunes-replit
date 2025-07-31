@@ -11,6 +11,7 @@ export function WeatherBackground({ weather, isLoading }: WeatherBackgroundProps
   const [backgroundIndex, setBackgroundIndex] = useState(0);
   const [currentBackground, setCurrentBackground] = useState(() => getTimeWeatherBackground());
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [debugInfo, setDebugInfo] = useState<string[]>([]);
 
   // Update time every minute
   useEffect(() => {
@@ -36,6 +37,10 @@ export function WeatherBackground({ weather, isLoading }: WeatherBackgroundProps
     const weatherCondition = weather?.condition as WeatherCondition;
     const maxBackgrounds = getBackgroundCount(weatherCondition);
     const nextIndex = (backgroundIndex + 1) % maxBackgrounds;
+    
+    const logMessage = `클릭! 현재: ${backgroundIndex} → 다음: ${nextIndex} (총 ${maxBackgrounds}개)`;
+    setDebugInfo(prev => [logMessage, ...prev.slice(0, 4)]);
+    
     console.log('=== BACKGROUND CLICK EVENT ===');
     console.log('Weather condition:', weatherCondition);
     console.log('Max backgrounds:', maxBackgrounds);
@@ -89,13 +94,30 @@ export function WeatherBackground({ weather, isLoading }: WeatherBackgroundProps
         </button>
         <button 
           onClick={() => {
-            console.log('Manual index change');
-            setBackgroundIndex(prev => (prev + 1) % getBackgroundCount(weather?.condition as WeatherCondition));
+            const weatherCondition = weather?.condition as WeatherCondition;
+            const maxBackgrounds = getBackgroundCount(weatherCondition);
+            const nextIndex = (backgroundIndex + 1) % maxBackgrounds;
+            const logMessage = `직접변경! ${backgroundIndex} → ${nextIndex}`;
+            setDebugInfo(prev => [logMessage, ...prev.slice(0, 4)]);
+            setBackgroundIndex(nextIndex);
           }}
           className="text-white text-xs font-bold bg-blue-600 rounded px-4 py-2 hover:bg-blue-700 transition-all duration-300 shadow-lg"
         >
           직접 변경
         </button>
+      </div>
+      
+      {/* 화면 디버깅 메시지 */}
+      <div className="absolute top-20 left-4 z-20 bg-black bg-opacity-80 text-white p-4 rounded max-w-xs">
+        <div className="text-xs font-bold mb-2">디버그 정보:</div>
+        <div className="text-xs">현재 인덱스: {backgroundIndex}</div>
+        <div className="text-xs">총 배경수: {getBackgroundCount(weather?.condition as WeatherCondition)}</div>
+        <div className="text-xs">날씨: {weather?.condition || 'default'}</div>
+        <div className="text-xs">시간대: {getTimeOfDay()}</div>
+        <div className="text-xs mt-2 font-bold">최근 로그:</div>
+        {debugInfo.map((log, idx) => (
+          <div key={idx} className="text-xs text-yellow-300">{log}</div>
+        ))}
       </div>
       
       {/* Enhanced Weather and Time Effects */}
