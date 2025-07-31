@@ -31,25 +31,42 @@ export function WeatherBackground({ weather, isLoading }: WeatherBackgroundProps
     setCurrentBackground(newBackground);
   }, [weather?.condition, currentTime, backgroundIndex]);
 
-  // Handle background click to cycle through options
-  const handleBackgroundClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+  // Handle background change (키보드 단축키용)
+  const changeBackground = (direction: 'next' | 'prev' = 'next') => {
     const weatherCondition = weather?.condition as WeatherCondition;
     const maxBackgrounds = getBackgroundCount(weatherCondition);
-    const nextIndex = (backgroundIndex + 1) % maxBackgrounds;
+    let nextIndex;
     
-    const logMessage = `클릭! 현재: ${backgroundIndex} → 다음: ${nextIndex} (총 ${maxBackgrounds}개)`;
+    if (direction === 'next') {
+      nextIndex = (backgroundIndex + 1) % maxBackgrounds;
+    } else {
+      nextIndex = backgroundIndex === 0 ? maxBackgrounds - 1 : backgroundIndex - 1;
+    }
+    
+    const logMessage = `키보드 ${direction === 'next' ? '다음' : '이전'}! ${backgroundIndex} → ${nextIndex}`;
     setDebugInfo(prev => [logMessage, ...prev.slice(0, 4)]);
-    
-    console.log('=== BACKGROUND CLICK EVENT ===');
-    console.log('Weather condition:', weatherCondition);
-    console.log('Max backgrounds:', maxBackgrounds);
-    console.log('Current index:', backgroundIndex);
-    console.log('Next index:', nextIndex);
-    console.log('==============================');
     setBackgroundIndex(nextIndex);
   };
+
+  // 키보드 이벤트 리스너 추가
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // 스페이스바 또는 화살표 키로 배경 변경
+      if (e.code === 'Space' || e.code === 'ArrowRight') {
+        e.preventDefault();
+        changeBackground('next');
+      } else if (e.code === 'ArrowLeft') {
+        e.preventDefault();
+        changeBackground('prev');
+      } else if (e.code === 'KeyB') {
+        e.preventDefault();
+        changeBackground('next');
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [backgroundIndex, weather?.condition]);
 
   const timeOfDay = getTimeOfDay();
   const timeDisplayName = getTimeDisplayName(timeOfDay);
@@ -84,40 +101,15 @@ export function WeatherBackground({ weather, isLoading }: WeatherBackgroundProps
         {timeDisplayName} • {currentTime.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
       </div>
       
-      {/* Debug test buttons - 좌상단 */}
-      <div className="absolute top-4 left-4 z-30 flex flex-col gap-2">
-        <button 
-          onMouseDown={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            alert(`테스트! 현재 인덱스: ${backgroundIndex}`);
-            const weatherCondition = weather?.condition as WeatherCondition;
-            const maxBackgrounds = getBackgroundCount(weatherCondition);
-            const nextIndex = (backgroundIndex + 1) % maxBackgrounds;
-            const logMessage = `RED 버튼 클릭! ${backgroundIndex} → ${nextIndex}`;
-            setDebugInfo(prev => [logMessage, ...prev.slice(0, 4)]);
-            setBackgroundIndex(nextIndex);
-          }}
-          className="text-white text-xs font-bold bg-red-600 rounded px-4 py-2 hover:bg-red-700 transition-all duration-300 shadow-lg pointer-events-auto z-30"
-        >
-          배경 변경 ({backgroundIndex + 1}/{getBackgroundCount(weather?.condition as WeatherCondition)})
-        </button>
-        <button 
-          onMouseDown={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            alert(`직접 변경! 인덱스: ${backgroundIndex}`);
-            const weatherCondition = weather?.condition as WeatherCondition;
-            const maxBackgrounds = getBackgroundCount(weatherCondition);
-            const nextIndex = (backgroundIndex + 1) % maxBackgrounds;
-            const logMessage = `BLUE 버튼 클릭! ${backgroundIndex} → ${nextIndex}`;
-            setDebugInfo(prev => [logMessage, ...prev.slice(0, 4)]);
-            setBackgroundIndex(nextIndex);
-          }}
-          className="text-white text-xs font-bold bg-blue-600 rounded px-4 py-2 hover:bg-blue-700 transition-all duration-300 shadow-lg pointer-events-auto z-30"
-        >
-          직접 변경
-        </button>
+      {/* 키보드 단축키 안내 */}
+      <div className="absolute top-4 left-4 z-30 bg-black bg-opacity-60 text-white text-xs rounded-lg p-3 backdrop-blur-sm">
+        <div className="font-bold mb-1">키보드 단축키:</div>
+        <div>스페이스바 / → : 다음 배경</div>
+        <div>← : 이전 배경</div>
+        <div>B : 배경 변경</div>
+        <div className="mt-2 text-yellow-300">
+          현재: {backgroundIndex + 1}/{getBackgroundCount(weather?.condition as WeatherCondition)}
+        </div>
       </div>
       
       {/* 우측 하단 접을 수 있는 디버그 로그 */}
