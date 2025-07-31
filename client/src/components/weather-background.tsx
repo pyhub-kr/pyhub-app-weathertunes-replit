@@ -30,11 +30,18 @@ export function WeatherBackground({ weather, isLoading }: WeatherBackgroundProps
   }, [weather?.condition, currentTime, backgroundIndex]);
 
   // Handle background click to cycle through options
-  const handleBackgroundClick = () => {
+  const handleBackgroundClick = (e: React.MouseEvent) => {
+    e.preventDefault();
     const weatherCondition = weather?.condition as WeatherCondition;
     const maxBackgrounds = getBackgroundCount(weatherCondition);
-    console.log('Background click:', { weatherCondition, maxBackgrounds, currentIndex: backgroundIndex });
-    setBackgroundIndex((prev) => (prev + 1) % maxBackgrounds);
+    const nextIndex = (backgroundIndex + 1) % maxBackgrounds;
+    console.log('Background click:', { 
+      weatherCondition, 
+      maxBackgrounds, 
+      currentIndex: backgroundIndex, 
+      nextIndex 
+    });
+    setBackgroundIndex(nextIndex);
   };
 
   const timeOfDay = getTimeOfDay();
@@ -61,15 +68,23 @@ export function WeatherBackground({ weather, isLoading }: WeatherBackgroundProps
       {/* Subtle overlay for text readability */}
       <div className="absolute inset-0 bg-black bg-opacity-15" />
       
-      {/* Background change indicator */}
-      <div className="absolute bottom-4 left-4 z-20 text-white text-opacity-60 text-xs font-medium bg-black bg-opacity-20 rounded-full px-3 py-1 backdrop-blur-sm transition-all duration-300 opacity-0 group-hover:opacity-100">
-        배경 변경 ({backgroundIndex + 1}/{getBackgroundCount(weather?.condition as WeatherCondition)})
+      {/* Background change indicator - always visible for testing */}
+      <div className="absolute bottom-4 left-4 z-20 text-white text-opacity-80 text-xs font-medium bg-black bg-opacity-40 rounded-full px-3 py-1 backdrop-blur-sm transition-all duration-300">
+        배경 {backgroundIndex + 1}/{getBackgroundCount(weather?.condition as WeatherCondition)} (클릭하여 변경)
       </div>
       
       {/* Time display overlay */}
       <div className="absolute top-4 right-4 z-20 text-white text-opacity-80 text-xs font-medium bg-black bg-opacity-25 rounded-full px-3 py-1 backdrop-blur-sm transition-all duration-300 hover:bg-opacity-40">
         {timeDisplayName} • {currentTime.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
       </div>
+      
+      {/* Debug test button */}
+      <button 
+        onClick={handleBackgroundClick}
+        className="absolute top-4 left-4 z-20 text-white text-xs font-medium bg-red-500 bg-opacity-80 rounded px-3 py-1 hover:bg-opacity-100 transition-all duration-300"
+      >
+        배경 변경 테스트
+      </button>
       
       {/* Enhanced Weather and Time Effects */}
       <div className="absolute inset-0 pointer-events-none z-10">
