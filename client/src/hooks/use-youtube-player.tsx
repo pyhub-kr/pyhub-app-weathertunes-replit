@@ -96,22 +96,32 @@ export function useYouTubePlayer() {
   const startTimeTracking = useCallback(() => {
     if (intervalRef.current) return;
     
-    // Ensure playStartRef is set
-    if (playStartRef.current === 0) {
-      playStartRef.current = Date.now();
-    }
-    
     intervalRef.current = setInterval(() => {
-      if (playStartRef.current > 0) {
-        // Calculate elapsed time since play started
-        const elapsedSeconds = (Date.now() - playStartRef.current) / 1000;
-        const totalTime = startTimeRef.current + elapsedSeconds;
-        
-        // Set reasonable duration (3-5 minutes for typical songs)
-        const estimatedDuration = 240; // 4 minutes
-        
-        setCurrentTime(Math.min(totalTime, estimatedDuration));
-        setDuration(estimatedDuration);
+      if (playerRef.current && playerRef.current.getCurrentTime && playerRef.current.getDuration) {
+        try {
+          // YouTube 플레이어에서 실제 현재 시간과 총 길이 가져오기
+          const currentSeconds = playerRef.current.getCurrentTime();
+          const totalSeconds = playerRef.current.getDuration();
+          
+          if (!isNaN(currentSeconds)) {
+            setCurrentTime(currentSeconds);
+          }
+          
+          if (!isNaN(totalSeconds) && totalSeconds > 0) {
+            setDuration(totalSeconds);
+          } else {
+            // duration을 가져올 수 없을 때 기본값 사용
+            setDuration(240);
+          }
+        } catch (error) {
+          // API 호출 실패 시 기존 방식 사용
+          if (playStartRef.current > 0) {
+            const elapsedSeconds = (Date.now() - playStartRef.current) / 1000;
+            const totalTime = startTimeRef.current + elapsedSeconds;
+            setCurrentTime(Math.min(totalTime, 240));
+            setDuration(240);
+          }
+        }
       }
     }, 1000);
   }, []);
@@ -143,15 +153,16 @@ export function useYouTubePlayer() {
   }, []);
 
   const seekTo = useCallback((seconds: number) => {
+    // YouTube 플레이어에서 실제 위치 변경
+    if (playerRef.current && playerRef.current.seekTo) {
+      playerRef.current.seekTo(seconds, true);
+    }
+    
+    // 내부 시간 추적 업데이트
     startTimeRef.current = seconds;
     playStartRef.current = Date.now();
     setCurrentTime(seconds);
-    
-    if (playerRef.current && isPlaying) {
-      // Don't seek YouTube video, just update our internal time
-      // YouTube seeking doesn't work well with live streams
-    }
-  }, [isPlaying]);
+  }, []);
 
   const setPlayerVolume = useCallback((newVolume: number) => {
     setVolume(newVolume);
