@@ -52,7 +52,7 @@ const getSearchKeywords = (condition: string, timeOfDay: 'dawn' | 'morning' | 'a
 };
 
 export function useUnsplashBackgrounds(condition: string | undefined, timeOfDay: 'dawn' | 'morning' | 'afternoon' | 'evening' | 'night') {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [currentImageIndex, setCurrentImageIndex] = useState(() => Math.floor(Math.random() * 30));
   const [previousImageIndex, setPreviousImageIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
@@ -70,6 +70,14 @@ export function useUnsplashBackgrounds(condition: string | undefined, timeOfDay:
     enabled: !!condition,
     staleTime: 1000 * 60 * 30, // 30분 캐시
   });
+
+  // 새로운 이미지 세트가 로드되면 랜덤 인덱스로 시작
+  useEffect(() => {
+    if (images?.results?.length) {
+      const randomIndex = Math.floor(Math.random() * images.results.length);
+      setCurrentImageIndex(randomIndex);
+    }
+  }, [images?.results]);
 
   const currentImage = images?.results?.[currentImageIndex];
   const previousImage = images?.results?.[previousImageIndex];
