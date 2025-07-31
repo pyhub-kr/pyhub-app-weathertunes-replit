@@ -60,12 +60,12 @@ export function SourceLinks({ currentImage, currentTrack }: SourceLinksProps) {
       onMouseEnter={() => setShowLinks(true)}
       onMouseLeave={() => setShowLinks(false)}
     >
-      <div className="bg-black bg-opacity-60 backdrop-blur-md rounded-lg px-3 py-2 text-white text-xs border border-white border-opacity-20 min-w-48 space-y-1">
+      <div className="bg-black bg-opacity-30 backdrop-blur-md rounded-lg px-3 py-2 text-white text-xs border border-white border-opacity-10 min-w-48 space-y-1">
         {/* Photo Attribution */}
         {currentImage && (
           <button
             onClick={handlePhotoClick}
-            className="block w-full text-left hover:bg-white hover:bg-opacity-10 rounded px-2 py-1 transition-all duration-200"
+            className="block w-full text-left hover:bg-white hover:bg-opacity-20 rounded px-2 py-1 transition-all duration-200"
             style={{
               textShadow: '0 1px 3px rgba(0,0,0,0.7)'
             }}
@@ -84,7 +84,7 @@ export function SourceLinks({ currentImage, currentTrack }: SourceLinksProps) {
         {currentTrack && (
           <button
             onClick={handleMusicClick}
-            className="block w-full text-left hover:bg-white hover:bg-opacity-10 rounded px-2 py-1 transition-all duration-200"
+            className="block w-full text-left hover:bg-white hover:bg-opacity-20 rounded px-2 py-1 transition-all duration-200"
             style={{
               textShadow: '0 1px 3px rgba(0,0,0,0.7)'
             }}
