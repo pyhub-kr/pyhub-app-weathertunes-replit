@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import type { WeatherData } from "@shared/schema";
 import { getTimeDisplayName, getTimeOfDay } from "@/lib/time-background";
 
@@ -14,16 +15,29 @@ const weatherIcons = {
 };
 
 export function WeatherCard({ weather }: WeatherCardProps) {
+  const [currentTime, setCurrentTime] = useState(new Date());
   const icon = weatherIcons[weather.condition as keyof typeof weatherIcons] || '🌤️';
   const timeOfDay = getTimeOfDay();
   const timeDisplayName = getTimeDisplayName(timeOfDay);
 
+  // Update time every minute
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 60000); // Update every minute
+
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <div className="bg-white bg-opacity-10 backdrop-blur-md rounded-3xl p-8 shadow-2xl animate-slide-up hover:bg-opacity-15 transition-all duration-300 hover:scale-105 hover:shadow-3xl">
       <div className="text-center mb-6">
-        {/* Time of Day */}
-        <div className="text-sm text-white text-opacity-60 mb-2 uppercase tracking-wider animate-pulse">
-          {timeDisplayName}
+        {/* Time of Day and Current Time */}
+        <div className="text-sm text-white text-opacity-70 mb-2 uppercase tracking-wider">
+          <div className="animate-pulse">{timeDisplayName}</div>
+          <div className="mt-1 text-xs text-white text-opacity-60">
+            {currentTime.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
+          </div>
         </div>
         
         {/* Weather Icon */}

@@ -11,8 +11,7 @@ export function WeatherBackground({ weather, isLoading }: WeatherBackgroundProps
   const [backgroundIndex, setBackgroundIndex] = useState(0);
   const [currentBackground, setCurrentBackground] = useState(() => getTimeWeatherBackground());
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [debugInfo, setDebugInfo] = useState<string[]>([]);
-  const [debugCollapsed, setDebugCollapsed] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
 
   // Update time every minute
   useEffect(() => {
@@ -43,8 +42,6 @@ export function WeatherBackground({ weather, isLoading }: WeatherBackgroundProps
       nextIndex = backgroundIndex === 0 ? maxBackgrounds - 1 : backgroundIndex - 1;
     }
     
-    const logMessage = `키보드 ${direction === 'next' ? '다음' : '이전'}! ${backgroundIndex} → ${nextIndex}`;
-    setDebugInfo(prev => [logMessage, ...prev.slice(0, 4)]);
     setBackgroundIndex(nextIndex);
   };
 
@@ -61,6 +58,9 @@ export function WeatherBackground({ weather, isLoading }: WeatherBackgroundProps
       } else if (e.code === 'KeyB') {
         e.preventDefault();
         changeBackground('next');
+      } else if (e.code === 'KeyH') {
+        e.preventDefault();
+        setShowHelp(prev => !prev);
       }
     };
 
@@ -92,59 +92,44 @@ export function WeatherBackground({ weather, isLoading }: WeatherBackgroundProps
       <div className="absolute inset-0 bg-black bg-opacity-15" />
       
       {/* Background change indicator - 좌하단 */}
-      <div className="absolute bottom-4 left-4 z-20 text-white text-opacity-80 text-xs font-medium bg-black bg-opacity-40 rounded-full px-3 py-1 backdrop-blur-sm transition-all duration-300">
+      <div className="absolute bottom-6 left-6 z-20 text-white text-opacity-80 text-xs font-medium bg-black bg-opacity-40 rounded-full px-3 py-1 backdrop-blur-sm transition-all duration-300">
         배경 {backgroundIndex + 1}/{getBackgroundCount(weather?.condition as WeatherCondition)}
       </div>
       
-      {/* Time display overlay */}
-      <div className="absolute top-4 right-4 z-20 text-white text-opacity-80 text-xs font-medium bg-black bg-opacity-25 rounded-full px-3 py-1 backdrop-blur-sm transition-all duration-300 hover:bg-opacity-40">
-        {timeDisplayName} • {currentTime.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
-      </div>
-      
-      {/* 키보드 단축키 안내 */}
-      <div className="absolute top-4 left-4 z-30 bg-black bg-opacity-60 text-white text-xs rounded-lg p-3 backdrop-blur-sm">
-        <div className="font-bold mb-1">키보드 단축키:</div>
-        <div>스페이스바 / → : 다음 배경</div>
-        <div>← : 이전 배경</div>
-        <div>B : 배경 변경</div>
-        <div className="mt-2 text-yellow-300">
-          현재: {backgroundIndex + 1}/{getBackgroundCount(weather?.condition as WeatherCondition)}
-        </div>
-      </div>
-      
-      {/* 우측 하단 접을 수 있는 디버그 로그 */}
-      <div className="absolute bottom-4 right-4 z-30">
-        <div 
-          onClick={() => setDebugCollapsed(!debugCollapsed)}
-          className="bg-black bg-opacity-80 text-white rounded-lg cursor-pointer transition-all duration-300 hover:bg-opacity-90"
-        >
-          {/* 헤더 (항상 보임) */}
-          <div className="px-4 py-2 flex items-center justify-between min-w-[200px]">
-            <span className="text-xs font-bold">디버그 로그</span>
-            <span className="text-xs">{debugCollapsed ? '▲' : '▼'}</span>
-          </div>
-          
-          {/* 콘텐츠 (접을 수 있음) */}
-          {!debugCollapsed && (
-            <div className="px-4 pb-4 border-t border-gray-600">
-              <div className="text-xs mt-2">현재 인덱스: {backgroundIndex}</div>
-              <div className="text-xs">총 배경수: {getBackgroundCount(weather?.condition as WeatherCondition)}</div>
-              <div className="text-xs">날씨: {weather?.condition || 'default'}</div>
-              <div className="text-xs">시간대: {getTimeOfDay()}</div>
-              <div className="text-xs mt-2 font-bold">최근 로그:</div>
-              <div className="max-h-32 overflow-y-auto">
-                {debugInfo.length === 0 ? (
-                  <div className="text-xs text-gray-400">아직 로그가 없습니다</div>
-                ) : (
-                  debugInfo.map((log, idx) => (
-                    <div key={idx} className="text-xs text-yellow-300">{log}</div>
-                  ))
-                )}
-              </div>
+      {/* 키보드 단축키 도움말 (H키로 토글) */}
+      {showHelp && (
+        <div className="absolute top-6 left-6 z-30 bg-black bg-opacity-80 text-white text-sm rounded-lg p-4 backdrop-blur-sm transition-all duration-300 max-w-xs">
+          <div className="font-bold mb-2 text-center">키보드 단축키</div>
+          <div className="space-y-1">
+            <div className="flex justify-between">
+              <span className="text-gray-300">스페이스바 / →</span>
+              <span>다음 배경</span>
             </div>
-          )}
+            <div className="flex justify-between">
+              <span className="text-gray-300">←</span>
+              <span>이전 배경</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-300">B</span>
+              <span>배경 변경</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-300">H</span>
+              <span>도움말 토글</span>
+            </div>
+          </div>
+          <div className="mt-3 pt-2 border-t border-gray-600 text-center text-yellow-300 text-xs">
+            현재: {backgroundIndex + 1}/{getBackgroundCount(weather?.condition as WeatherCondition)}
+          </div>
         </div>
-      </div>
+      )}
+      
+      {/* Help hint - H키 안내 */}
+      {!showHelp && (
+        <div className="absolute top-6 left-6 z-20 text-white text-opacity-60 text-xs bg-black bg-opacity-30 rounded px-2 py-1 backdrop-blur-sm transition-all duration-300">
+          H키: 도움말
+        </div>
+      )}
       
       {/* Enhanced Weather and Time Effects */}
       <div className="absolute inset-0 pointer-events-none z-10">
