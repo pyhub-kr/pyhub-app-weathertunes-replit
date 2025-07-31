@@ -341,7 +341,7 @@ export default function Home() {
             className="fixed inset-0 flex items-center justify-center pointer-events-none" 
             style={{ zIndex: 10001 }}
           >
-            <div className="bg-black text-white text-sm sm:text-lg rounded-xl p-4 sm:p-6 transition-all duration-300 max-w-xs sm:max-w-md w-full mx-4 shadow-2xl border-2 border-white border-opacity-50 pointer-events-auto"
+            <div className="bg-black text-white text-sm sm:text-lg rounded-xl p-4 sm:p-6 transition-all duration-300 max-w-xs sm:max-w-md mx-4 shadow-2xl border-2 border-white border-opacity-50 pointer-events-auto backdrop-blur-md"
                  style={{ backgroundColor: 'rgba(0, 0, 0, 0.95)' }}>
               <div className="font-bold mb-3 sm:mb-4 text-center text-lg sm:text-xl">키보드 단축키</div>
               <div className="space-y-2 sm:space-y-3">
