@@ -28,7 +28,7 @@ export function MusicPlayer({
       </div>
       
       {/* Music Controls */}
-      <div className="flex items-center justify-center space-x-3 sm:space-x-4 mb-3 sm:mb-4">
+      <div className="flex items-center justify-center space-x-3 sm:space-x-4 mb-4 sm:mb-5 mt-2 sm:mt-3">
         <button 
           onClick={onPrevious}
           className="w-10 h-10 sm:w-12 sm:h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-opacity-30 transition-all duration-200 hover:scale-110 active:scale-95"
@@ -67,7 +67,7 @@ export function MusicPlayer({
 
       
       {/* Additional Controls */}
-      <div className="flex justify-center space-x-4">
+      <div className="flex justify-center space-x-4 mt-3 sm:mt-4">
         <button 
           onClick={onRefresh}
           className="text-white text-opacity-70 hover:text-opacity-100 transition-all duration-200 hover:scale-110 active:scale-95 hover:rotate-180"
