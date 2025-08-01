@@ -24,6 +24,8 @@ export function getTimeOfDay(): TimeOfDay {
   return 'night'; // 20-5시
 }
 
+
+
 export type WeatherCondition = 'clear' | 'clouds' | 'rain' | 'snow' | 'thunderstorm' | 'fog' | 'default';
 
 // Multiple background options for each time and weather condition
