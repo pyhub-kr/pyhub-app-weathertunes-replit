@@ -27,7 +27,7 @@ export function PlaylistStats() {
   if (!stats) return null;
 
   return (
-    <div className="fixed bottom-4 right-4 z-50">
+    <div className="fixed bottom-4 right-4 z-50 sm:bottom-20 sm:right-4">
       <button
         onClick={() => setShowStats(!showStats)}
         className="bg-black bg-opacity-30 backdrop-blur-md rounded-full w-12 h-12 flex items-center justify-center hover:bg-opacity-40 transition-all duration-200 border border-white border-opacity-10"

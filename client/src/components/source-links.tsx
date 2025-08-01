@@ -60,7 +60,36 @@ export function SourceLinks({ currentImage, currentTrack }: SourceLinksProps) {
       onMouseEnter={() => setShowLinks(true)}
       onMouseLeave={() => setShowLinks(false)}
     >
-      <div className="bg-black bg-opacity-30 backdrop-blur-md rounded-lg px-3 py-2 text-white text-xs border border-white border-opacity-10 min-w-48">
+      {/* Mobile: Icon-only compact layout */}
+      <div className="sm:hidden bg-black bg-opacity-30 backdrop-blur-md rounded-lg p-2 text-white text-xs border border-white border-opacity-10">
+        <div className="flex space-x-2">
+          {currentImage && (
+            <button
+              onClick={handlePhotoClick}
+              className="p-1 hover:bg-white hover:bg-opacity-20 rounded transition-all duration-200"
+              title={`Photo by ${currentImage.user?.name} - Unsplash에서 보기`}
+            >
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              </svg>
+            </button>
+          )}
+          {currentTrack && (
+            <button
+              onClick={handleMusicClick}
+              className="p-1 hover:bg-white hover:bg-opacity-20 rounded transition-all duration-200"
+              title={`${currentTrack.title} - YouTube에서 보기`}
+            >
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+              </svg>
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Desktop: Full text layout */}
+      <div className="hidden sm:block bg-black bg-opacity-30 backdrop-blur-md rounded-lg px-3 py-2 text-white text-xs border border-white border-opacity-10 min-w-48">
         {/* Photo Attribution */}
         {currentImage && (
           <button
