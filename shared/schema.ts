@@ -20,10 +20,20 @@ export const locationSchema = z.object({
 });
 
 export const musicTrackSchema = z.object({
+  id: z.string(),
   title: z.string(),
   artist: z.string(),
-  mood: z.string(),
   youtubeId: z.string(),
+  tags: z.object({
+    weather: z.array(z.string()),      // ['clear', 'rain', 'cloudy', 'snow', 'fog']
+    mood: z.array(z.string()),         // ['energetic', 'calm', 'romantic', 'dreamy', 'powerful']
+    genre: z.array(z.string()),        // ['kpop', 'ballad', 'dance', 'rnb', 'hiphop']
+    time: z.array(z.string()),         // ['morning', 'afternoon', 'evening', 'night']
+    energy: z.number().min(1).max(10), // 1-10 (차분함-활기참)
+    popularity: z.number().min(1).max(10), // 1-10 (인지도)
+  }),
+  // 레거시 지원을 위한 옵셔널 필드
+  mood: z.string().optional(),
   duration: z.number().optional(),
 });
 

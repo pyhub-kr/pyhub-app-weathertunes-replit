@@ -8,7 +8,7 @@ import { useGeolocation } from "@/hooks/use-geolocation";
 import { useWeather } from "@/hooks/use-weather";
 import { useYouTubePlayer } from "@/hooks/use-youtube-player";
 import { useUserCount } from "@/hooks/use-user-count";
-import { getMusicForWeather, getRandomTrack } from "@/lib/music-mapping";
+import { getMusicForWeather, getRandomTrack, getNextTrack, getPreviousTrack } from "@/lib/music-mapping";
 import type { MusicTrack } from "@shared/schema";
 
 export default function Home() {
@@ -37,22 +37,26 @@ export default function Home() {
     setOnTrackEnd,
   } = useYouTubePlayer();
 
-  // Update playlist when weather changes with random starting track
+  // Update playlist when weather changes with smart selection
   useEffect(() => {
     if (weather?.condition) {
-      const newPlaylist = getMusicForWeather(weather.condition);
+      const newPlaylist = getMusicForWeather(weather.condition, 50); // 스마트 알고리즘으로 50곡 선택
       setPlaylist(newPlaylist);
-      // Start with random track instead of first one
-      const randomIndex = Math.floor(Math.random() * newPlaylist.length);
-      setCurrentTrackIndex(randomIndex);
-      setCurrentTrack(newPlaylist[randomIndex] || null);
+      // 스마트 선곡 시스템에서 가중치 기반 랜덤 트랙 선택
+      const firstTrack = getRandomTrack(newPlaylist);
+      if (firstTrack) {
+        setCurrentTrack(firstTrack);
+        setCurrentTrackIndex(0); // 인덱스는 의미가 없어짐 (스마트 알고리즘 사용)
+      }
     }
   }, [weather?.condition]);
 
   // Load current track when it changes and auto-play if user has interacted
   useEffect(() => {
     if (currentTrack && isReady) {
-      loadVideo(currentTrack.youtubeId, currentTrack.title, currentTrack.mood);
+      // 새로운 스키마에 맞게 수정 - mood 대신 tags.mood 사용
+      const moodText = currentTrack.tags?.mood?.join(", ") || currentTrack.mood || "K-pop";
+      loadVideo(currentTrack.youtubeId, currentTrack.title, moodText);
       // Auto-play after a brief delay to ensure video is loaded
       if (hasUserInteracted) {
         setTimeout(() => {
@@ -97,29 +101,23 @@ export default function Home() {
 
   const handlePrevious = useCallback(() => {
     if (playlist.length > 0) {
-      // Random previous track instead of sequential
-      let newIndex;
-      do {
-        newIndex = Math.floor(Math.random() * playlist.length);
-      } while (newIndex === currentTrackIndex && playlist.length > 1); // Avoid same track
-      
-      setCurrentTrackIndex(newIndex);
-      setCurrentTrack(playlist[newIndex]);
+      // 스마트 이전 트랙 선택 (다양성 기반)
+      const previousTrack = getPreviousTrack(playlist, currentTrack);
+      if (previousTrack) {
+        setCurrentTrack(previousTrack);
+      }
     }
-  }, [playlist, currentTrackIndex]);
+  }, [playlist, currentTrack]);
 
   const handleNext = useCallback(() => {
     if (playlist.length > 0) {
-      // Random next track instead of sequential
-      let newIndex;
-      do {
-        newIndex = Math.floor(Math.random() * playlist.length);
-      } while (newIndex === currentTrackIndex && playlist.length > 1); // Avoid same track
-      
-      setCurrentTrackIndex(newIndex);
-      setCurrentTrack(playlist[newIndex]);
+      // 스마트 다음 트랙 선택 (유사성 기반)
+      const nextTrack = getNextTrack(playlist, currentTrack);
+      if (nextTrack) {
+        setCurrentTrack(nextTrack);
+      }
     }
-  }, [playlist, currentTrackIndex]);
+  }, [playlist, currentTrack]);
 
   // 트랙이 끝났을 때 자동으로 다음 곡 재생 및 Media Session API 설정
   useEffect(() => {

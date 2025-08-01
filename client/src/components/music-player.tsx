@@ -32,7 +32,9 @@ export function MusicPlayer({
           )}
         </div>
         <div className="text-white text-sm sm:text-base font-medium mb-1 truncate transition-all duration-300 text-shadow">{track.title}</div>
-        <div className="text-white text-xs sm:text-sm transition-colors duration-300 text-shadow">{track.mood}</div>
+        <div className="text-white text-xs sm:text-sm transition-colors duration-300 text-shadow">
+          {track.artist} • {track.tags?.mood?.join(", ") || "태그 시스템 활성화"}
+        </div>
       </div>
       
       {/* Music Controls */}
