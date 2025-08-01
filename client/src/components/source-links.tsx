@@ -60,8 +60,8 @@ export function SourceLinks({ currentImage, currentTrack }: SourceLinksProps) {
       onMouseEnter={() => setShowLinks(true)}
       onMouseLeave={() => setShowLinks(false)}
     >
-      {/* Mobile: Icon-only compact layout */}
-      <div className="sm:hidden bg-black bg-opacity-30 backdrop-blur-md rounded-lg p-2 text-white text-xs border border-white border-opacity-10">
+      {/* Mobile/Tablet: Icon-only compact layout */}
+      <div className="md:hidden bg-black bg-opacity-30 backdrop-blur-md rounded-lg p-2 text-white text-xs border border-white border-opacity-10">
         <div className="flex space-x-2">
           {currentImage && (
             <button
@@ -89,7 +89,7 @@ export function SourceLinks({ currentImage, currentTrack }: SourceLinksProps) {
       </div>
 
       {/* Desktop: Full text layout */}
-      <div className="hidden sm:block bg-black bg-opacity-30 backdrop-blur-md rounded-lg px-3 py-2 text-white text-xs border border-white border-opacity-10 min-w-48">
+      <div className="hidden md:block bg-black bg-opacity-30 backdrop-blur-md rounded-lg px-3 py-2 text-white text-xs border border-white border-opacity-10 min-w-48">
         {/* Photo Attribution */}
         {currentImage && (
           <button

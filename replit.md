@@ -147,3 +147,5 @@ UI Design Preference: Ultra-minimal interface with maximum immersion, no unneces
 - **YouTube Player Robustness**: Added detailed debug logs and error catching for player operations
 - **Simplified UI Interactions**: Removed scale hover effects from all buttons and panels for cleaner interface
 - **Streamlined Touch Interface**: Confirmed no swipe gestures present, maintaining keyboard-only background controls
+- **Mobile Attribution Optimization**: Implemented responsive attribution box showing icons only on mobile/tablet (md breakpoint) for space efficiency
+- **Fixed UI Element Overlap**: Resolved attribution box and playlist stats button collision on smaller screens with proper positioning and responsive breakpoints
