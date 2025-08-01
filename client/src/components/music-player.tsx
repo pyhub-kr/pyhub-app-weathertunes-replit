@@ -21,7 +21,7 @@ export function MusicPlayer({
 
 
   return (
-    <div className="bg-black bg-opacity-30 backdrop-blur-md rounded-3xl p-3 sm:p-4 shadow-2xl animate-slide-up hover:bg-opacity-40 transition-all duration-300 hover:scale-105 border border-white border-opacity-10">
+    <div className="bg-black bg-opacity-30 backdrop-blur-md rounded-3xl p-3 sm:p-4 shadow-2xl animate-slide-up hover:bg-opacity-40 transition-all duration-300 border border-white border-opacity-10">
       {/* Currently Playing Info */}
       <div className="text-center mb-3 sm:mb-4">
         <div className="text-white text-xs mb-1 text-shadow">
@@ -41,7 +41,7 @@ export function MusicPlayer({
       <div className="flex items-center justify-center space-x-3 sm:space-x-4 mb-4 sm:mb-5 mt-2 sm:mt-3">
         <button 
           onClick={onPrevious}
-          className="w-10 h-10 sm:w-12 sm:h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-opacity-30 transition-all duration-200 hover:scale-110 active:scale-95"
+          className="w-10 h-10 sm:w-12 sm:h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-opacity-30 transition-all duration-200"
         >
           <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white transition-transform duration-200" fill="currentColor" viewBox="0 0 20 20">
             <path d="M8.445 14.832A1 1 0 0010 14v-2.798l5.445 3.63A1 1 0 0017 14V6a1 1 0 00-1.555-.832L10 8.798V6a1 1 0 00-1.555-.832l-6 4a1 1 0 000 1.664l6 4z" />
@@ -50,7 +50,7 @@ export function MusicPlayer({
         
         <button 
           onClick={onPlayPause}
-          className="w-14 h-14 sm:w-16 sm:h-16 bg-white bg-opacity-30 rounded-full flex items-center justify-center hover:bg-opacity-40 transition-all duration-200 hover:scale-110 active:scale-95"
+          className="w-14 h-14 sm:w-16 sm:h-16 bg-white bg-opacity-30 rounded-full flex items-center justify-center hover:bg-opacity-40 transition-all duration-200"
           style={isPlaying ? { animation: 'pulse 2s infinite' } : {}}
         >
           {isPlaying ? (
@@ -66,7 +66,7 @@ export function MusicPlayer({
         
         <button 
           onClick={onNext}
-          className="w-10 h-10 sm:w-12 sm:h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-opacity-30 transition-all duration-200 hover:scale-110 active:scale-95"
+          className="w-10 h-10 sm:w-12 sm:h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-opacity-30 transition-all duration-200"
         >
           <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white transition-transform duration-200" fill="currentColor" viewBox="0 0 20 20">
             <path d="M4.555 5.168A1 1 0 003 6v8a1 1 0 001.555.832L10 11.202V14a1 1 0 001.555.832l6-4a1 1 0 000-1.664l-6-4A1 1 0 0010 6v2.798l-5.445-3.63z" />
@@ -80,7 +80,7 @@ export function MusicPlayer({
       <div className="flex justify-center space-x-4 mt-3 sm:mt-4">
         <button 
           onClick={onRefresh}
-          className="text-white text-opacity-70 hover:text-opacity-100 transition-all duration-200 hover:scale-110 active:scale-95 hover:rotate-180"
+          className="text-white text-opacity-70 hover:text-opacity-100 transition-all duration-200 hover:rotate-180"
           title="새로운 음악 찾기"
         >
           <svg className="w-5 h-5 transition-transform duration-500" fill="currentColor" viewBox="0 0 20 20">

@@ -31,7 +31,7 @@ export function WeatherCard({ weather }: WeatherCardProps) {
   }, []);
 
   return (
-    <div className="bg-black bg-opacity-30 backdrop-blur-md rounded-3xl p-4 sm:p-6 lg:p-8 shadow-2xl animate-slide-up hover:bg-opacity-40 transition-all duration-300 hover:scale-105 hover:shadow-3xl border border-white border-opacity-10">
+    <div className="bg-black bg-opacity-30 backdrop-blur-md rounded-3xl p-4 sm:p-6 lg:p-8 shadow-2xl animate-slide-up hover:bg-opacity-40 transition-all duration-300 border border-white border-opacity-10">
       <div className="text-center mb-4 sm:mb-6">
         {/* Time of Day and Current Time */}
         <div className="text-xs sm:text-sm text-white mb-2 uppercase tracking-wider text-shadow">
@@ -42,7 +42,7 @@ export function WeatherCard({ weather }: WeatherCardProps) {
         </div>
         
         {/* Weather Icon */}
-        <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 mx-auto mb-3 sm:mb-4 text-4xl sm:text-5xl lg:text-6xl flex items-center justify-center transition-transform duration-300 hover:scale-110" style={{ animation: 'float 3s ease-in-out infinite' }}>
+        <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 mx-auto mb-3 sm:mb-4 text-4xl sm:text-5xl lg:text-6xl flex items-center justify-center transition-transform duration-300" style={{ animation: 'float 3s ease-in-out infinite' }}>
           {icon}
         </div>
         
