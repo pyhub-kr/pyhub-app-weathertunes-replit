@@ -117,3 +117,13 @@ Preferred communication style: Simple, everyday language.
 **Media Session API Integration**: Enables background playback control through browser notifications, lock screen controls, and keyboard media keys.
 
 **Expanded Content Database**: 750+ music tracks categorized by weather conditions and time of day, with enhanced background image keywords including night cityscapes and campfire scenes.
+
+## Recent Changes (2025-01-02)
+
+- **Fixed Critical Playlist Generation Bug**: Resolved timeWeight undefined error that was preventing music from loading
+- **Implemented Comprehensive DEBUG Mode**: Added error catching with detailed modal display showing stack traces and error context  
+- **Enhanced Weather Condition Matching**: Improved support for "clouds" weather condition alongside "cloudy" and "overcast"
+- **Added Complete Time Zone Support**: Added all time periods (dawn, sunrise, morning, forenoon, noon, afternoon, evening, sunset, night) with proper weights
+- **Improved Error Handling**: Enhanced error boundary with separate production/development mode handling
+- **Added Debug Logging**: Implemented detailed console logging for playlist generation and weather matching debugging
+- **Fixed Music Player Visibility**: Resolved issue where music player wouldn't appear when playlist was empty but tracks were available
