@@ -35,13 +35,16 @@ export function getMusicForWeather(weatherCondition: string, maxTracks: number =
   let baseTracks: MusicTrack[] = [];
   let weatherType: keyof typeof weatherEnergyPreference = "clear";
   
+  console.log(`[DEBUG] Weather condition: "${condition}"`);
+  console.log(`[DEBUG] Available tracks - Clear: ${clearWeatherTracks.length}, Cloudy: ${cloudyWeatherTracks.length}, Rain: ${rainyWeatherTracks.length}`);
+  
   if (condition.includes("clear") || condition.includes("sunny")) {
     baseTracks = clearWeatherTracks;
     weatherType = "clear";
   } else if (condition.includes("rain") || condition.includes("drizzle") || condition.includes("shower")) {
     baseTracks = rainyWeatherTracks;
     weatherType = "rain";
-  } else if (condition.includes("cloud") || condition.includes("overcast")) {
+  } else if (condition.includes("cloud") || condition.includes("overcast") || condition.includes("clouds")) {
     baseTracks = cloudyWeatherTracks;
     weatherType = "cloudy";
   } else if (condition.includes("fog") || condition.includes("mist") || condition.includes("haze")) {
@@ -54,6 +57,8 @@ export function getMusicForWeather(weatherCondition: string, maxTracks: number =
     baseTracks = clearWeatherTracks;
     weatherType = "clear";
   }
+  
+  console.log(`[DEBUG] Selected weather type: ${weatherType}, Base tracks: ${baseTracks.length}`);
   
   // 시간대와 에너지 레벨에 따른 가중치 점수 계산
   const scoredTracks = baseTracks.map(track => {
