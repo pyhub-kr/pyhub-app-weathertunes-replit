@@ -150,3 +150,4 @@ UI Design Preference: Ultra-minimal interface with maximum immersion, no unneces
 - **Mobile Attribution Optimization**: Implemented responsive attribution box showing icons only on mobile/tablet (md breakpoint) for space efficiency
 - **Fixed UI Element Overlap**: Resolved attribution box and playlist stats button collision on smaller screens with proper positioning and responsive breakpoints
 - **Improved Main Content Layout**: Fixed vertical centering of weather and music player panels for better visual balance across all screen sizes
+- **Apple-style Loading Splash**: Replaced basic loading overlay with premium splash screen featuring gradient background, animated loading indicator, and progressive dots animation

@@ -5,6 +5,7 @@ import { MusicPlayer } from "@/components/music-player";
 import { YouTubePlayer } from "@/components/youtube-player";
 import { SourceLinks } from "@/components/source-links";
 import { PlaylistStats } from "@/components/playlist-stats";
+import { LoadingSplash } from "@/components/loading-splash";
 import { useGeolocation } from "@/hooks/use-geolocation";
 import { useWeather } from "@/hooks/use-weather";
 import { useYouTubePlayer } from "@/hooks/use-youtube-player";
@@ -240,16 +241,9 @@ export default function Home() {
         onImageChange={setCurrentBackgroundImage}
       />
       
-      {/* Loading Overlay */}
+      {/* Apple-style Loading Splash */}
       {(isLoading || isRefreshing) && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 flex items-center justify-center">
-          <div className="bg-black bg-opacity-40 backdrop-blur-md rounded-2xl p-8 text-center border border-white border-opacity-20">
-            <div className="animate-spin w-8 h-8 border-2 border-white border-t-transparent rounded-full mx-auto mb-4"></div>
-            <div className="text-white text-lg text-shadow">
-              {isRefreshing ? "위치 정보를 새로고침 중..." : "날씨 정보를 가져오는 중..."}
-            </div>
-          </div>
-        </div>
+        <LoadingSplash isRefreshing={isRefreshing} />
       )}
 
       {/* Error State */}
