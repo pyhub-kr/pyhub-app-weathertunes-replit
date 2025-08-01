@@ -11,6 +11,7 @@ import { useYouTubePlayer } from "@/hooks/use-youtube-player";
 import { useUserCount } from "@/hooks/use-user-count";
 import { useTimeZoneDetection } from "@/hooks/use-time-zone-detection";
 import { getMusicForWeather, getRandomTrack, getNextTrack, getPreviousTrack } from "@/lib/music-mapping";
+import { catchError } from "@/lib/debug";
 import type { MusicTrack } from "@shared/schema";
 
 export default function Home() {
@@ -43,32 +44,36 @@ export default function Home() {
 
   // Update playlist when weather or time zone changes with smart selection
   useEffect(() => {
-    if (weather?.condition) {
-      // 중복 갱신 방지: 날씨와 시간대가 실제로 변경된 경우에만 플레이리스트 갱신
-      const needsUpdate = !lastPlaylistUpdate || 
-        lastPlaylistUpdate.weather !== weather.condition || 
-        lastPlaylistUpdate.timeZone !== currentTimeZone;
-      
-      if (needsUpdate) {
-        console.log(`🎵 스마트 플레이리스트 갱신: ${weather.condition} + ${currentTimeZone}`);
-        const newPlaylist = getMusicForWeather(weather.condition, 50); // 스마트 알고리즘으로 50곡 선택
-        setPlaylist(newPlaylist);
+    try {
+      if (weather?.condition) {
+        // 중복 갱신 방지: 날씨와 시간대가 실제로 변경된 경우에만 플레이리스트 갱신
+        const needsUpdate = !lastPlaylistUpdate || 
+          lastPlaylistUpdate.weather !== weather.condition || 
+          lastPlaylistUpdate.timeZone !== currentTimeZone;
         
-        // 현재 재생 중인 곡이 새 플레이리스트에도 있으면 유지, 없으면 새로운 곡 선택
-        const currentTrackInNewPlaylist = currentTrack && newPlaylist.find(t => t.id === currentTrack.id);
-        
-        if (!currentTrackInNewPlaylist) {
-          // 스마트 선곡 시스템에서 가중치 기반 랜덤 트랙 선택
-          const firstTrack = getRandomTrack(newPlaylist);
-          if (firstTrack) {
-            setCurrentTrack(firstTrack);
-            setCurrentTrackIndex(0); // 인덱스는 의미가 없어짐 (스마트 알고리즘 사용)
+        if (needsUpdate) {
+          console.log(`🎵 스마트 플레이리스트 갱신: ${weather.condition} + ${currentTimeZone}`);
+          const newPlaylist = getMusicForWeather(weather.condition, 50); // 스마트 알고리즘으로 50곡 선택
+          setPlaylist(newPlaylist);
+          
+          // 현재 재생 중인 곡이 새 플레이리스트에도 있으면 유지, 없으면 새로운 곡 선택
+          const currentTrackInNewPlaylist = currentTrack && newPlaylist.find(t => t.id === currentTrack.id);
+          
+          if (!currentTrackInNewPlaylist) {
+            // 스마트 선곡 시스템에서 가중치 기반 랜덤 트랙 선택
+            const firstTrack = getRandomTrack(newPlaylist);
+            if (firstTrack) {
+              setCurrentTrack(firstTrack);
+              setCurrentTrackIndex(0); // 인덱스는 의미가 없어짐 (스마트 알고리즘 사용)
+            }
           }
+          
+          // 갱신 기록 저장
+          setLastPlaylistUpdate({ weather: weather.condition, timeZone: currentTimeZone });
         }
-        
-        // 갱신 기록 저장
-        setLastPlaylistUpdate({ weather: weather.condition, timeZone: currentTimeZone });
       }
+    } catch (error) {
+      catchError(error instanceof Error ? error : new Error(String(error)), 'Home-PlaylistUpdate');
     }
   }, [weather?.condition, currentTimeZone, lastPlaylistUpdate, currentTrack]); // 시간대 변화도 감지
 
