@@ -329,8 +329,8 @@ export default function Home() {
           </header>
 
           {/* Main Content */}
-          <main className="flex-1 flex items-center justify-center px-3 sm:px-4 py-1 sm:py-2 min-h-0 overflow-y-auto">
-            <div className="w-full max-w-xs sm:max-w-sm mx-auto space-y-2 sm:space-y-3 lg:space-y-4 flex flex-col justify-center">
+          <main className="flex-1 flex items-center justify-center px-3 sm:px-4 py-6 sm:py-8 min-h-0">
+            <div className="w-full max-w-xs sm:max-w-sm mx-auto space-y-3 sm:space-y-4 lg:space-y-5">
               {weather && <WeatherCard weather={weather} />}
               
 
