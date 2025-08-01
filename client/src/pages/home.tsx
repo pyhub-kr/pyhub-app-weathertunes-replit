@@ -54,6 +54,7 @@ export default function Home() {
         if (needsUpdate) {
           console.log(`🎵 스마트 플레이리스트 갱신: ${weather.condition} + ${currentTimeZone}`);
           const newPlaylist = getMusicForWeather(weather.condition, 50); // 스마트 알고리즘으로 50곡 선택
+          console.log(`플레이리스트 생성됨: ${newPlaylist.length}곡`, newPlaylist.slice(0, 3));
           setPlaylist(newPlaylist);
           
           // 현재 재생 중인 곡이 새 플레이리스트에도 있으면 유지, 없으면 새로운 곡 선택
