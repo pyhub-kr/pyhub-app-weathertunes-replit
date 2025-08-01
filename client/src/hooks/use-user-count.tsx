@@ -13,10 +13,14 @@ export function useUserCount() {
 
   const sendVisibilityStatus = (isVisible: boolean) => {
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-      wsRef.current.send(JSON.stringify({
-        type: 'visibility',
-        isVisible
-      }));
+      try {
+        wsRef.current.send(JSON.stringify({
+          type: 'visibility',
+          isVisible: Boolean(isVisible)
+        }));
+      } catch (error) {
+        console.error('Failed to send WebSocket message:', error);
+      }
     }
   };
 
@@ -42,15 +46,25 @@ export function useUserCount() {
       
       ws.onmessage = (event) => {
         try {
+          // More robust message validation
+          if (typeof event.data !== 'string') {
+            console.warn('WebSocket received non-string data:', typeof event.data);
+            return;
+          }
+          
           const data = JSON.parse(event.data);
-          if (data.type === 'userCount') {
+          
+          if (data && typeof data === 'object' && data.type === 'userCount') {
+            const activeUsers = parseInt(data.activeUsers) || 0;
+            const totalUsers = parseInt(data.totalUsers) || 0;
+            
             setUserCount({
-              activeUsers: data.activeUsers,
-              totalUsers: data.totalUsers
+              activeUsers: Math.max(0, activeUsers),
+              totalUsers: Math.max(0, totalUsers)
             });
           }
         } catch (error) {
-          console.error('WebSocket message parse error:', error);
+          console.warn('WebSocket message parse error (non-critical):', error);
         }
       };
       
@@ -65,13 +79,13 @@ export function useUserCount() {
       };
       
       ws.onerror = (error) => {
-        console.error('WebSocket error:', error);
+        console.warn('WebSocket connection issue (will retry):', error);
         setIsConnected(false);
       };
       
       wsRef.current = ws;
     } catch (error) {
-      console.error('WebSocket connection error:', error);
+      console.warn('WebSocket connection failed (will retry):', error);
       setIsConnected(false);
     }
   };

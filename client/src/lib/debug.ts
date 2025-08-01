@@ -57,12 +57,23 @@ if (typeof window !== 'undefined') {
   });
 
   window.addEventListener('unhandledrejection', (event) => {
-    debugManager.addError({
-      message: `Unhandled Promise Rejection: ${event.reason}`,
-      stack: event.reason?.stack,
-      component: 'Promise',
-      timestamp: Date.now()
-    });
+    // Filter out WebSocket connection errors as they're handled gracefully
+    const reasonStr = String(event.reason);
+    const isWebSocketError = reasonStr.includes('WebSocket') || 
+                            reasonStr.includes('SyntaxError: The string did not match the expected pattern') ||
+                            reasonStr.includes('Connection failed');
+    
+    if (!isWebSocketError) {
+      debugManager.addError({
+        message: `Unhandled Promise Rejection: ${event.reason}`,
+        stack: event.reason?.stack,
+        component: 'Promise',
+        timestamp: Date.now()
+      });
+    } else {
+      // Just log WebSocket errors without showing debug modal
+      console.warn('WebSocket connection issue (handled gracefully):', event.reason);
+    }
   });
 }
 

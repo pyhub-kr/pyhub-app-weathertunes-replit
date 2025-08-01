@@ -151,3 +151,4 @@ UI Design Preference: Ultra-minimal interface with maximum immersion, no unneces
 - **Fixed UI Element Overlap**: Resolved attribution box and playlist stats button collision on smaller screens with proper positioning and responsive breakpoints
 - **Improved Main Content Layout**: Fixed vertical centering of weather and music player panels for better visual balance across all screen sizes
 - **Apple-style Loading Splash**: Replaced basic loading overlay with premium splash screen featuring gradient background, animated loading indicator, and progressive dots animation
+- **Enhanced WebSocket Error Handling**: Improved error filtering to prevent debug modal from showing for normal WebSocket connection issues, graceful reconnection handling

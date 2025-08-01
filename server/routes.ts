@@ -292,19 +292,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     
     ws.on('message', (data) => {
       try {
-        const message = JSON.parse(data.toString());
+        const rawMessage = data.toString();
+        if (!rawMessage || typeof rawMessage !== 'string') {
+          console.warn('Invalid WebSocket message format:', typeof rawMessage);
+          return;
+        }
+        
+        const message = JSON.parse(rawMessage);
         const user = connectedUsers.get(userId);
         
-        if (user) {
+        if (user && message && typeof message === 'object') {
           user.lastSeen = Date.now();
           
-          if (message.type === 'visibility') {
+          if (message.type === 'visibility' && typeof message.isVisible === 'boolean') {
             user.isActive = message.isVisible;
             broadcastUserCount();
           }
         }
       } catch (error) {
-        console.error('WebSocket message error:', error);
+        console.error('WebSocket message error:', error, 'Raw data:', data.toString());
       }
     });
     
