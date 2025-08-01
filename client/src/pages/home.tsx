@@ -416,7 +416,7 @@ export default function Home() {
       />
 
       {/* Playlist Stats */}
-      <PlaylistStats />
+      {/* <PlaylistStats /> */}
     </div>
   );
 }

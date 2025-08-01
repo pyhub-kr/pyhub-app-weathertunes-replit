@@ -4,15 +4,25 @@ import { useState, useEffect } from "react";
 export function PlaylistStats() {
   const [stats, setStats] = useState<any>(null);
   const [showStats, setShowStats] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     try {
       const playlistStats = getPlaylistStats();
+      console.log("Playlist stats loaded:", playlistStats);
       setStats(playlistStats);
+      setError(null);
     } catch (error) {
-      console.log("플레이리스트 통계 로딩 중 오류:", error);
+      console.error("플레이리스트 통계 로딩 중 오류:", error);
+      setError(error instanceof Error ? error.message : "Unknown error");
     }
   }, []);
+
+  // 에러가 있으면 숨김 처리
+  if (error) {
+    console.warn("PlaylistStats error:", error);
+    return null;
+  }
 
   if (!stats) return null;
 
