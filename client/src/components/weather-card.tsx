@@ -35,7 +35,7 @@ export function WeatherCard({ weather }: WeatherCardProps) {
       <div className="text-center mb-4 sm:mb-6">
         {/* Time of Day and Current Time */}
         <div className="text-xs sm:text-sm text-white mb-2 uppercase tracking-wider text-shadow">
-          <TimeZoneIndicator />
+          <div className="animate-pulse">{timeDisplayName}</div>
           <div className="mt-1 text-xs text-white text-shadow">
             {currentTime.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
           </div>
