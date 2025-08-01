@@ -3,6 +3,8 @@ import type { MusicTrack } from "@shared/schema";
 interface MusicPlayerProps {
   track: MusicTrack;
   isPlaying: boolean;
+  isLoading?: boolean;
+  hasError?: boolean;
   onPlayPause: () => void;
   onPrevious: () => void;
   onNext: () => void;
@@ -12,6 +14,8 @@ interface MusicPlayerProps {
 export function MusicPlayer({
   track,
   isPlaying,
+  isLoading = false,
+  hasError = false,
   onPlayPause,
   onPrevious,
   onNext,
@@ -25,7 +29,11 @@ export function MusicPlayer({
       {/* Currently Playing Info */}
       <div className="text-center mb-3 sm:mb-4">
         <div className="text-white text-xs mb-1 text-shadow">
-          {isPlaying ? (
+          {hasError ? (
+            <span className="text-red-400">로딩 실패, 다음 곡으로...</span>
+          ) : isLoading ? (
+            <span className="animate-pulse">로딩 중...</span>
+          ) : isPlaying ? (
             <span className="animate-pulse">현재 재생 중</span>
           ) : (
             <span>일시정지</span>
@@ -50,8 +58,18 @@ export function MusicPlayer({
           onClick={onPlayPause}
           className="w-14 h-14 sm:w-16 sm:h-16 bg-white bg-opacity-30 rounded-full flex items-center justify-center hover:bg-opacity-40 transition-all duration-200 hover:scale-110 active:scale-95"
           style={isPlaying ? { animation: 'pulse 2s infinite' } : {}}
+          disabled={isLoading}
         >
-          {isPlaying ? (
+          {isLoading ? (
+            <svg className="w-5 h-5 sm:w-6 sm:h-6 text-white animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="m15.2 8.8-3.6 3.6 3.6 3.6L13.8 17.4 8.8 12.4l5-5z"></path>
+            </svg>
+          ) : hasError ? (
+            <svg className="w-5 h-5 sm:w-6 sm:h-6 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+            </svg>
+          ) : isPlaying ? (
             <svg className="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
             </svg>
