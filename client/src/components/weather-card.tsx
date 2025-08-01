@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import type { WeatherData } from "@shared/schema";
 import { getTimeDisplayName, getTimeOfDay } from "@/lib/time-background";
+import { TimeZoneIndicator } from "@/components/time-zone-indicator";
 
 interface WeatherCardProps {
   weather: WeatherData;
@@ -34,7 +35,7 @@ export function WeatherCard({ weather }: WeatherCardProps) {
       <div className="text-center mb-4 sm:mb-6">
         {/* Time of Day and Current Time */}
         <div className="text-xs sm:text-sm text-white mb-2 uppercase tracking-wider text-shadow">
-          <div className="animate-pulse">{timeDisplayName}</div>
+          <TimeZoneIndicator />
           <div className="mt-1 text-xs text-white text-shadow">
             {currentTime.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
           </div>
