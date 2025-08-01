@@ -56,6 +56,7 @@ export function useYouTubePlayer() {
       },
       events: {
         onReady: (event: any) => {
+          console.log("YouTube player ready");
           setIsReady(true);
           event.target.setVolume(volume);
         },
@@ -135,21 +136,35 @@ export function useYouTubePlayer() {
   }, []);
 
   const play = useCallback(() => {
-    if (playerRef.current && playerRef.current.playVideo) {
-      playerRef.current.playVideo();
-      playStartRef.current = Date.now();
+    try {
+      if (playerRef.current && playerRef.current.playVideo) {
+        console.log("YouTube player play() called");
+        playerRef.current.playVideo();
+        playStartRef.current = Date.now();
+      } else {
+        console.warn("YouTube player not ready or playVideo method unavailable");
+      }
+    } catch (error) {
+      console.error("Error calling play():", error);
     }
   }, []);
 
   const pause = useCallback(() => {
-    if (playerRef.current && playerRef.current.pauseVideo) {
-      playerRef.current.pauseVideo();
-      // Update startTimeRef to current time when pausing
-      if (playStartRef.current > 0) {
-        const elapsedSeconds = (Date.now() - playStartRef.current) / 1000;
-        startTimeRef.current += elapsedSeconds;
-        playStartRef.current = 0;
+    try {
+      if (playerRef.current && playerRef.current.pauseVideo) {
+        console.log("YouTube player pause() called");
+        playerRef.current.pauseVideo();
+        // Update startTimeRef to current time when pausing
+        if (playStartRef.current > 0) {
+          const elapsedSeconds = (Date.now() - playStartRef.current) / 1000;
+          startTimeRef.current += elapsedSeconds;
+          playStartRef.current = 0;
+        }
+      } else {
+        console.warn("YouTube player not ready or pauseVideo method unavailable");
       }
+    } catch (error) {
+      console.error("Error calling pause():", error);
     }
   }, []);
 
@@ -174,6 +189,7 @@ export function useYouTubePlayer() {
 
   const loadVideo = useCallback((videoId: string, trackTitle?: string, trackMood?: string) => {
     if (playerRef.current && playerRef.current.loadVideoById) {
+      console.log(`Loading video: ${videoId} - ${trackTitle}`);
       playerRef.current.loadVideoById(videoId);
       // Reset time counters for new video
       startTimeRef.current = 0;
@@ -201,6 +217,8 @@ export function useYouTubePlayer() {
           if (playerRef.current) playerRef.current.pauseVideo();
         });
       }
+    } else {
+      console.error("Cannot load video - player not ready or loadVideoById not available");
     }
   }, []);
 

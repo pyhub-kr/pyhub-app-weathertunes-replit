@@ -119,10 +119,22 @@ export default function Home() {
   }, [hasUserInteracted, currentTrack, isReady, isPlaying, play]);
 
   const handlePlayPause = () => {
-    if (isPlaying) {
-      pause();
-    } else {
-      play();
+    // 사용자 상호작용 상태 업데이트
+    if (!hasUserInteracted) {
+      setHasUserInteracted(true);
+    }
+    
+    try {
+      if (isPlaying) {
+        console.log("Pausing player...");
+        pause();
+      } else {
+        console.log("Playing player...");
+        play();
+      }
+    } catch (error) {
+      console.error("Play/Pause error:", error);
+      catchError(error instanceof Error ? error : new Error(String(error)), 'HandlePlayPause');
     }
   };
 
