@@ -26,8 +26,6 @@ export default function Home() {
   const {
     isReady,
     isPlaying,
-    isLoading: isPlayerLoading,
-    hasError: hasPlayerError,
     currentTime,
     duration,
     volume,
@@ -37,7 +35,6 @@ export default function Home() {
     setVolume: setPlayerVolume,
     loadVideo,
     setOnTrackEnd,
-    setOnError,
   } = useYouTubePlayer();
 
   // Update playlist when weather changes with random starting track
@@ -124,7 +121,7 @@ export default function Home() {
     }
   }, [playlist, currentTrackIndex]);
 
-  // 트랙이 끝났을 때 자동으로 다음 곡 재생 및 에러 핸들링 설정
+  // 트랙이 끝났을 때 자동으로 다음 곡 재생 및 Media Session API 설정
   useEffect(() => {
     if (setOnTrackEnd) {
       setOnTrackEnd(() => {
@@ -133,14 +130,6 @@ export default function Home() {
         setTimeout(() => {
           play();
         }, 1000);
-      });
-    }
-
-    // 에러 발생 시 자동으로 다음 곡으로 이동
-    if (setOnError) {
-      setOnError(() => {
-        console.log('YouTube player error, skipping to next track...');
-        handleNext();
       });
     }
 
@@ -160,7 +149,7 @@ export default function Home() {
         }, 500);
       });
     }
-  }, [setOnTrackEnd, setOnError, handleNext, handlePrevious, play]);
+  }, [setOnTrackEnd, handleNext, handlePrevious, play]);
 
   // 볼륨 조절 키보드 이벤트 리스너
   useEffect(() => {
@@ -199,23 +188,23 @@ export default function Home() {
     }
   }, [location?.city, location?.country]); // 도시나 국가가 변경되면 트리거
 
-  const isWeatherLoading = locationLoading || weatherLoading;
+  const isLoading = locationLoading || weatherLoading;
   // Only show error if we have a real error AND we're not using default location successfully
-  const hasWeatherError = (locationError && !isUsingDefault) || weatherError;
+  const hasError = (locationError && !isUsingDefault) || weatherError;
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#0f0f23]">
       {/* Background */}
       <WeatherBackground 
         weather={weather || null} 
-        isLoading={isWeatherLoading} 
+        isLoading={isLoading} 
         showHelp={showHelp}
         onHelpToggle={() => setShowHelp(prev => !prev)}
         onImageChange={setCurrentBackgroundImage}
       />
       
       {/* Loading Overlay */}
-      {(isWeatherLoading || isRefreshing) && (
+      {(isLoading || isRefreshing) && (
         <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 flex items-center justify-center">
           <div className="bg-black bg-opacity-40 backdrop-blur-md rounded-2xl p-8 text-center border border-white border-opacity-20">
             <div className="animate-spin w-8 h-8 border-2 border-white border-t-transparent rounded-full mx-auto mb-4"></div>
@@ -227,7 +216,7 @@ export default function Home() {
       )}
 
       {/* Error State */}
-      {hasWeatherError && !isWeatherLoading && (
+      {hasError && !isLoading && (
         <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 flex items-center justify-center">
           <div className="bg-black bg-opacity-40 backdrop-blur-md rounded-2xl p-8 text-center max-w-md mx-4 border border-white border-opacity-20">
             <div className="text-red-400 text-4xl mb-4">⚠️</div>
@@ -253,7 +242,7 @@ export default function Home() {
       )}
 
       {/* Main Interface */}
-      {!isWeatherLoading && !hasWeatherError && !isRefreshing && (
+      {!isLoading && !hasError && !isRefreshing && (
         <div className="relative z-10 flex flex-col h-screen safe-area-inset overflow-hidden">
           {/* Header */}
           <header className="flex justify-between items-center p-3 sm:p-4 lg:p-6 flex-shrink-0">
@@ -311,8 +300,6 @@ export default function Home() {
                 <MusicPlayer
                   track={currentTrack}
                   isPlaying={isPlaying}
-                  isLoading={isPlayerLoading}
-                  hasError={hasPlayerError}
                   onPlayPause={handlePlayPause}
                   onPrevious={handlePrevious}
                   onNext={handleNext}

@@ -10,8 +10,6 @@ declare global {
 export function useYouTubePlayer() {
   const [isReady, setIsReady] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [hasError, setHasError] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(50);
@@ -21,7 +19,6 @@ export function useYouTubePlayer() {
   const startTimeRef = useRef<number>(0);
   const playStartRef = useRef<number>(0);
   const onTrackEndRef = useRef<(() => void) | null>(null);
-  const onErrorRef = useRef<(() => void) | null>(null);
 
   useEffect(() => {
     // Load YouTube IFrame API if not already loaded
@@ -64,14 +61,7 @@ export function useYouTubePlayer() {
         },
         onStateChange: (event: any) => {
           const state = event.data;
-          
-          // 로딩 상태 처리
-          if (state === window.YT.PlayerState.BUFFERING) {
-            setIsLoading(true);
-            setHasError(false);
-          } else if (state === window.YT.PlayerState.PLAYING) {
-            setIsLoading(false);
-            setHasError(false);
+          if (state === window.YT.PlayerState.PLAYING) {
             setIsPlaying(true);
             playStartRef.current = Date.now();
             // Use setTimeout to ensure state is updated before starting tracking
@@ -83,8 +73,7 @@ export function useYouTubePlayer() {
             if ('mediaSession' in navigator) {
               navigator.mediaSession.playbackState = 'playing';
             }
-          } else if (state === window.YT.PlayerState.PAUSED) {
-            setIsLoading(false);
+          } else {
             setIsPlaying(false);
             stopTimeTracking();
             
@@ -92,31 +81,14 @@ export function useYouTubePlayer() {
             if ('mediaSession' in navigator) {
               navigator.mediaSession.playbackState = 'paused';
             }
-          } else if (state === window.YT.PlayerState.CUED) {
-            setIsLoading(false);
-            setIsPlaying(false);
           }
 
           if (state === window.YT.PlayerState.ENDED) {
-            setIsLoading(false);
             // 곡이 끝났을 때 콜백 실행
             if (onTrackEndRef.current) {
               onTrackEndRef.current();
             }
           }
-        },
-        onError: (event: any) => {
-          console.error('YouTube player error:', event.data);
-          setIsLoading(false);
-          setHasError(true);
-          setIsPlaying(false);
-          
-          // 에러 시 다음 곡 자동 재생
-          setTimeout(() => {
-            if (onErrorRef.current) {
-              onErrorRef.current();
-            }
-          }, 1000);
         },
       },
     });
@@ -202,10 +174,6 @@ export function useYouTubePlayer() {
 
   const loadVideo = useCallback((videoId: string, trackTitle?: string, trackMood?: string) => {
     if (playerRef.current && playerRef.current.loadVideoById) {
-      setIsLoading(true);
-      setHasError(false);
-      setIsPlaying(false);
-      
       playerRef.current.loadVideoById(videoId);
       // Reset time counters for new video
       startTimeRef.current = 0;
@@ -240,15 +208,9 @@ export function useYouTubePlayer() {
     onTrackEndRef.current = callback;
   }, []);
 
-  const setOnError = useCallback((callback: (() => void) | null) => {
-    onErrorRef.current = callback;
-  }, []);
-
   return {
     isReady,
     isPlaying,
-    isLoading,
-    hasError,
     currentTime,
     duration,
     volume,
@@ -258,6 +220,5 @@ export function useYouTubePlayer() {
     setVolume: setPlayerVolume,
     loadVideo,
     setOnTrackEnd,
-    setOnError,
   };
 }
