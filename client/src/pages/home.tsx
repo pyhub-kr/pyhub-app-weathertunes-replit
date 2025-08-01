@@ -321,15 +321,7 @@ export default function Home() {
             <div className="w-full max-w-xs sm:max-w-sm mx-auto space-y-2 sm:space-y-3 lg:space-y-4 flex flex-col justify-center">
               {weather && <WeatherCard weather={weather} />}
               
-              {/* Debug: 플레이리스트 정보 표시 */}
-              {process.env.NODE_ENV === 'development' && (
-                <div className="bg-black bg-opacity-50 text-white p-2 rounded text-xs">
-                  <div>Playlist: {playlist.length}곡</div>
-                  <div>Current Track: {currentTrack ? currentTrack.title : '없음'}</div>
-                  <div>Weather: {weather?.condition}</div>
-                  <div>Time Zone: {currentTimeZone}</div>
-                </div>
-              )}
+
               
               {currentTrack ? (
                 <MusicPlayer

@@ -7,6 +7,7 @@ This is a full-stack weather-based music application built with React, Express, 
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
+UI Design Preference: Ultra-minimal interface with maximum immersion, no unnecessary debug panels or information displays.
 
 ## System Architecture
 
