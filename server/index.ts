@@ -47,6 +47,29 @@ app.use((req, res, next) => {
     throw err;
   });
 
+  // Add static asset handling with proper MIME types before catch-all
+  if (app.get("env") !== "development") {
+    // In production, ensure proper static file serving with MIME types
+    const path = await import("path");
+    const distPath = path.resolve(import.meta.dirname, "dist/public");
+    
+    // Serve static assets with explicit MIME type handling
+    app.use(express.static(distPath, {
+      setHeaders: (res, filePath) => {
+        if (filePath.endsWith('.css')) {
+          res.setHeader('Content-Type', 'text/css; charset=utf-8');
+        } else if (filePath.endsWith('.js')) {
+          res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
+        } else if (filePath.endsWith('.map')) {
+          res.setHeader('Content-Type', 'application/json; charset=utf-8');
+        } else if (filePath.endsWith('.svg')) {
+          res.setHeader('Content-Type', 'image/svg+xml; charset=utf-8');
+        }
+      },
+      maxAge: '1y'
+    }));
+  }
+
   // importantly only setup vite in development and after
   // setting up all the other routes so the catch-all route
   // doesn't interfere with the other routes

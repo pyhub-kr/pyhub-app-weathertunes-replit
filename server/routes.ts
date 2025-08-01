@@ -5,17 +5,31 @@ import { weatherDataSchema, locationSchema } from "@shared/schema";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Fix MIME type issues for assets and add cache control
+  // Comprehensive asset MIME type and routing fix
   app.use((req, res, next) => {
     const url = req.url;
+    const isAssetRequest = url.includes('/assets/') || 
+                          url.endsWith('.css') || 
+                          url.endsWith('.js') || 
+                          url.endsWith('.map') || 
+                          url.endsWith('.svg') || 
+                          url.endsWith('.ico') || 
+                          url.endsWith('.png') || 
+                          url.endsWith('.jpg') || 
+                          url.endsWith('.jpeg') || 
+                          url.endsWith('.gif') ||
+                          url.endsWith('.woff') ||
+                          url.endsWith('.woff2') ||
+                          url.endsWith('.ttf') ||
+                          url.endsWith('.eot');
     
     // Set proper MIME types for assets
     if (url.endsWith('.css')) {
       res.setHeader('Content-Type', 'text/css; charset=utf-8');
-      res.setHeader('Cache-Control', 'public, max-age=31536000'); // 1 year cache for CSS
+      res.setHeader('Cache-Control', 'public, max-age=31536000');
     } else if (url.endsWith('.js')) {
       res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
-      res.setHeader('Cache-Control', 'public, max-age=31536000'); // 1 year cache for JS
+      res.setHeader('Cache-Control', 'public, max-age=31536000');
     } else if (url.endsWith('.map')) {
       res.setHeader('Content-Type', 'application/json; charset=utf-8');
       res.setHeader('Cache-Control', 'public, max-age=31536000');
@@ -25,14 +39,94 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } else if (url.endsWith('.ico')) {
       res.setHeader('Content-Type', 'image/x-icon');
       res.setHeader('Cache-Control', 'public, max-age=31536000');
-    } else if (url.endsWith('.png') || url.endsWith('.jpg') || url.endsWith('.jpeg') || url.endsWith('.gif')) {
+    } else if (url.endsWith('.png')) {
+      res.setHeader('Content-Type', 'image/png');
       res.setHeader('Cache-Control', 'public, max-age=31536000');
-    } else if (url.includes('/assets/') && !url.includes('/api/')) {
-      // For any other assets, prevent HTML fallback and set proper cache
+    } else if (url.endsWith('.jpg') || url.endsWith('.jpeg')) {
+      res.setHeader('Content-Type', 'image/jpeg');
+      res.setHeader('Cache-Control', 'public, max-age=31536000');
+    } else if (url.endsWith('.gif')) {
+      res.setHeader('Content-Type', 'image/gif');
+      res.setHeader('Cache-Control', 'public, max-age=31536000');
+    } else if (url.endsWith('.woff')) {
+      res.setHeader('Content-Type', 'font/woff');
+      res.setHeader('Cache-Control', 'public, max-age=31536000');
+    } else if (url.endsWith('.woff2')) {
+      res.setHeader('Content-Type', 'font/woff2');
+      res.setHeader('Cache-Control', 'public, max-age=31536000');
+    } else if (url.endsWith('.ttf')) {
+      res.setHeader('Content-Type', 'font/ttf');
+      res.setHeader('Cache-Control', 'public, max-age=31536000');
+    } else if (url.endsWith('.eot')) {
+      res.setHeader('Content-Type', 'application/vnd.ms-fontobject');
+      res.setHeader('Cache-Control', 'public, max-age=31536000');
+    } else if (isAssetRequest) {
+      // Generic cache control for other assets
       res.setHeader('Cache-Control', 'public, max-age=31536000');
     }
     
     next();
+  });
+
+  // Direct static file serving for assets - bypass all other middleware
+  app.get(['/assets/*', '*.css', '*.js', '*.map', '*.svg', '*.ico', '*.png', '*.jpg', '*.jpeg', '*.gif', '*.woff', '*.woff2', '*.ttf', '*.eot'], async (req, res, next) => {
+    try {
+      const path = await import('path');
+      const fs = await import('fs/promises');
+      
+      // Try multiple possible paths for the file
+      const possiblePaths = [
+        path.join(process.cwd(), 'dist/public', req.path),
+        path.join(process.cwd(), 'client/public', req.path),
+        path.join(process.cwd(), req.path)
+      ];
+      
+      let filePath: string | null = null;
+      for (const testPath of possiblePaths) {
+        try {
+          await fs.access(testPath);
+          filePath = testPath;
+          break;
+        } catch {
+          // Continue to next path
+        }
+      }
+      
+      if (!filePath) {
+        return next(); // Let other middleware handle it
+      }
+      
+      // Set proper MIME type based on file extension
+      const ext = path.extname(filePath).toLowerCase();
+      const mimeTypes: Record<string, string> = {
+        '.css': 'text/css; charset=utf-8',
+        '.js': 'application/javascript; charset=utf-8',
+        '.map': 'application/json; charset=utf-8',
+        '.svg': 'image/svg+xml; charset=utf-8',
+        '.ico': 'image/x-icon',
+        '.png': 'image/png',
+        '.jpg': 'image/jpeg',
+        '.jpeg': 'image/jpeg',
+        '.gif': 'image/gif',
+        '.woff': 'font/woff',
+        '.woff2': 'font/woff2',
+        '.ttf': 'font/ttf',
+        '.eot': 'application/vnd.ms-fontobject'
+      };
+      
+      const mimeType = mimeTypes[ext] || 'application/octet-stream';
+      
+      res.setHeader('Content-Type', mimeType);
+      res.setHeader('Cache-Control', 'public, max-age=31536000');
+      res.setHeader('X-Content-Type-Options', 'nosniff');
+      
+      // Send the file
+      const fileContent = await fs.readFile(filePath);
+      res.send(fileContent);
+    } catch (error) {
+      console.error('Error serving asset:', error);
+      next(); // Let other middleware handle it
+    }
   });
   // Unsplash images endpoint
   app.get('/api/unsplash/:query', async (req, res) => {
