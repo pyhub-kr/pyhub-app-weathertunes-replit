@@ -11,9 +11,14 @@ import {
 
 // 시간대별 가중치 시스템
 const timeWeights = {
+  dawn: { morning: 2, afternoon: 0.5, evening: 0.3, night: 1 },
+  sunrise: { morning: 3, afternoon: 1, evening: 0.5, night: 0.2 },
   morning: { morning: 3, afternoon: 1, evening: 0.5, night: 0.2 },
+  forenoon: { morning: 2, afternoon: 2, evening: 0.8, night: 0.3 },
+  noon: { morning: 1, afternoon: 3, evening: 1, night: 0.3 },
   afternoon: { morning: 0.5, afternoon: 3, evening: 1, night: 0.3 },
   evening: { morning: 0.2, afternoon: 1, evening: 3, night: 1 },
+  sunset: { morning: 0.2, afternoon: 0.8, evening: 3, night: 2 },
   night: { morning: 0.1, afternoon: 0.3, evening: 1, night: 3 }
 };
 
@@ -59,6 +64,7 @@ export function getMusicForWeather(weatherCondition: string, maxTracks: number =
   }
   
   console.log(`[DEBUG] Selected weather type: ${weatherType}, Base tracks: ${baseTracks.length}`);
+  console.log(`[DEBUG] Current time: ${currentTime}`);
   
   // 시간대와 에너지 레벨에 따른 가중치 점수 계산
   const scoredTracks = baseTracks.map(track => {
@@ -66,9 +72,13 @@ export function getMusicForWeather(weatherCondition: string, maxTracks: number =
     
     // 시간대 가중치
     const timeWeight = timeWeights[currentTime as keyof typeof timeWeights];
-    track.tags.time.forEach(time => {
-      score += timeWeight[time as keyof typeof timeWeight] || 0;
-    });
+    if (timeWeight && track.tags.time) {
+      track.tags.time.forEach(time => {
+        if (time && timeWeight[time as keyof typeof timeWeight]) {
+          score += timeWeight[time as keyof typeof timeWeight];
+        }
+      });
+    }
     
     // 에너지 레벨 가중치
     const energyPreference = weatherEnergyPreference[weatherType];
