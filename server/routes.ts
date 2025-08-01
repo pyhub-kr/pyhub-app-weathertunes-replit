@@ -5,6 +5,35 @@ import { weatherDataSchema, locationSchema } from "@shared/schema";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Fix MIME type issues for assets and add cache control
+  app.use((req, res, next) => {
+    const url = req.url;
+    
+    // Set proper MIME types for assets
+    if (url.endsWith('.css')) {
+      res.setHeader('Content-Type', 'text/css; charset=utf-8');
+      res.setHeader('Cache-Control', 'public, max-age=31536000'); // 1 year cache for CSS
+    } else if (url.endsWith('.js')) {
+      res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
+      res.setHeader('Cache-Control', 'public, max-age=31536000'); // 1 year cache for JS
+    } else if (url.endsWith('.map')) {
+      res.setHeader('Content-Type', 'application/json; charset=utf-8');
+      res.setHeader('Cache-Control', 'public, max-age=31536000');
+    } else if (url.endsWith('.svg')) {
+      res.setHeader('Content-Type', 'image/svg+xml; charset=utf-8');
+      res.setHeader('Cache-Control', 'public, max-age=31536000');
+    } else if (url.endsWith('.ico')) {
+      res.setHeader('Content-Type', 'image/x-icon');
+      res.setHeader('Cache-Control', 'public, max-age=31536000');
+    } else if (url.endsWith('.png') || url.endsWith('.jpg') || url.endsWith('.jpeg') || url.endsWith('.gif')) {
+      res.setHeader('Cache-Control', 'public, max-age=31536000');
+    } else if (url.includes('/assets/') && !url.includes('/api/')) {
+      // For any other assets, prevent HTML fallback and set proper cache
+      res.setHeader('Cache-Control', 'public, max-age=31536000');
+    }
+    
+    next();
+  });
   // Unsplash images endpoint
   app.get('/api/unsplash/:query', async (req, res) => {
     try {
