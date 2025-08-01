@@ -8,7 +8,7 @@ import { useGeolocation } from "@/hooks/use-geolocation";
 import { useWeather } from "@/hooks/use-weather";
 import { useYouTubePlayer } from "@/hooks/use-youtube-player";
 import { useUserCount } from "@/hooks/use-user-count";
-import { getPlaylistForWeather } from "@/lib/music-mapping";
+import { getMusicForWeather, getRandomTrack } from "@/lib/music-mapping";
 import type { MusicTrack } from "@shared/schema";
 
 export default function Home() {
@@ -40,7 +40,7 @@ export default function Home() {
   // Update playlist when weather changes with random starting track
   useEffect(() => {
     if (weather?.condition) {
-      const newPlaylist = getPlaylistForWeather(weather.condition);
+      const newPlaylist = getMusicForWeather(weather.condition);
       setPlaylist(newPlaylist);
       // Start with random track instead of first one
       const randomIndex = Math.floor(Math.random() * newPlaylist.length);
@@ -172,7 +172,7 @@ export default function Home() {
 
   const handleRefresh = () => {
     if (weather?.condition) {
-      const newPlaylist = getPlaylistForWeather(weather.condition);
+      const newPlaylist = getMusicForWeather(weather.condition);
       setPlaylist(newPlaylist);
       const randomIndex = Math.floor(Math.random() * newPlaylist.length);
       setCurrentTrackIndex(randomIndex);
